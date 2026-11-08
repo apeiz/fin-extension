@@ -191,7 +191,7 @@ description: Turn chosen sites dark without slowing them down. Photos keep their
 | Privacy policy URL | `https://apeiz.github.io/fin-extension/privacy.html` |
 | Support URL | `https://apeiz.github.io/fin-extension/#support` |
 | Website | `https://apeiz.github.io/fin-extension/` |
-| Search terms | 暗色模式 深色模式 夜间模式 网页变暗 dark mode night mode 护眼 |
+| Search terms | dark mode / dark theme / night mode / dim web pages / eye comfort / reduce brightness / invert colors |
 | YouTube video | 留空 |
 | Mature content | 否 |
 | Contains in-app purchases | **是**（政策 1.8.2 要求披露付费功能与价格区间，描述里已写明） |
