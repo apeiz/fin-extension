@@ -100,14 +100,14 @@
     els.newHost.disabled = sitesFull;
     els.newHost.placeholder = sitesFull
       ? '免费额度已用完'
-      : '例如 www.joinquant.com 或 *.joinquant.com';
+      : '例如 www.example.com 或 *.example.com';
 
     els.addWhitelistBtn.disabled = wlFull;
     els.addWhitelistBtn.textContent = wlFull ? '已达上限' : '添加';
     els.newWhitelist.disabled = wlFull;
     els.newWhitelist.placeholder = wlFull
       ? '免费额度已用完'
-      : '例如 www.bilibili.com 或 *.bilibili.com';
+      : '例如 www.example.com 或 *.example.com';
   }
 
   function renderLicense() {
