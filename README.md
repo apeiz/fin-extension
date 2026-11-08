@@ -16,7 +16,10 @@ html { filter: invert(.92) hue-rotate(180deg); }
 
 ## 安装
 
-**商店**：上架后在此补充 Edge Add-ons 链接。
+**Microsoft Edge**：加载项商店已上架，直接打开
+[Fall in Night](https://microsoftedge.microsoft.com/addons/detail/mlchkmkainlgkedcdojlfkcfogclilki) 安装，之后随商店自动更新。
+
+**Chrome**：应用商店没有上，用下面的开发者模式安装，代码是同一份。
 
 **开发者模式**：
 

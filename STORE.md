@@ -420,38 +420,51 @@ Minimum Chromium 96. The interface is in Chinese; the six screenshots show every
 
 ## 审核周期
 
-首次提交最长 7 个工作日。审核期间再提交新版本会重新排队，别一边等一边改。
+官方写首次提交最长 7 个工作日。实测：2026-11-08 19:41 提交，2026-11-09 04:06 已能在商店打开，8.5 小时内通过。这个数只说明「快的时候可以很快」，不能当承诺。
+
+审核期间再提交新版本会重新排队，别一边等一边改。
 
 ## 提交记录与 ID
 
 | 项 | 值 |
 | --- | --- |
-| 提交时间 | 2026-11-08 19:41 |
+| 首次提交 | 2026-11-08 19:41 |
+| 上架 | 2026-11-09 |
 | 版本 | 1.0.2 |
-| 状态 | In review |
+| 状态 | Published |
 | Store ID | `0RDCKFG2NF9F` |
-| CRX ID | `mlchkmkainlgkedcdqjlfcgfogcllki` |
+| CRX ID | `mlchkmkainlgkedcdojlfkcfogclilki` |
 | Product ID | `02240301-2e30-4762-a92d-0bb8724a2a5a` |
 | Category | Accessibility |
 | Visibility | Public |
 | Languages | English (United States) |
 
-**Store ID 是发布后直达链接的路径**：
+**直达链接用 CRX ID，不是 Store ID**：
 
 ```
-https://microsoftedge.microsoft.com/addons/detail/0RDCKFG2NF9F
+https://microsoftedge.microsoft.com/addons/detail/mlchkmkainlgkedcdojlfkcfogclilki
 ```
 
-未发布时这条会 404（页面上「URL: Will be available once the extension is published」就是这个意思），发布后立刻可用。文档站、README、隐私页里想放「去商店安装」的按钮，先按这个格式写好，发布当天生效，不用改。
+三种写法实测（2026-11-09）：
 
-CRX ID 是扩展在 Edge 里的运行时 ID，`edge-extension://mlchkmkainlgkedcdqjlfcgfogcllki/` 这种地址用它。注意本地用「加载解压缩的扩展」装进去时是另一个 ID，存储数据不互通，这是正常的。
+| 路径里的 ID | 结果 |
+| --- | --- |
+| CRX ID `mlchkmkainlgkedcdojlfkcfogclilki` | 200，标题 `Fall in Night - Microsoft Edge Add-ons` |
+| Store ID `0RDCKFG2NF9F` | 404 |
+| 字符错位的 CRX ID | 404 |
 
-**审核期间什么别做**：不要点 `Update`（会重新排队），不要点 `Cancel submission`，不要用同一个 1.0.2 再提交一次。
+这里踩过一次：早先从截图识别 ID，把 `d-o-j-l-f-k-c` 认成了 `d-q-j-l-f-c-g`，长度仍是 32 位，只是字符错位，拼出来的链接 404，当时还写进文档说「发布后即可用」。**ID 一律从页面或 Partner Center 复制，不手抄、不从截图识别。**
 
-### 可能被挑的两处
+CRX ID 同时是扩展在浏览器里的运行时 ID，`edge-extension://mlchkmkainlgkedcdojlfkcfogclilki/` 用这个。本地用「加载解压缩的扩展」装进去时是另一个 ID，存储数据不互通，属于正常现象。
 
-- **Category 选了 Accessibility**，而功能是暗色模式。暗色确实和视觉舒适沾边，但 Accessibility 分类下的主流是高对比、屏幕阅读器类工具，审核有可能说类别不符。真被问就把 Category 改成 Productivity 再提，改这一个字段会重新走审核。
-- **Languages 只填了 English (United States)**，而界面是中文。认证备注里已经写明是有意为之并解释，若审核追问，补一份 zh-CN 的列表即可，不影响包本身。
+**发布后再改都要走 Update**：换包、改列表、改类别都会触发新一轮审核；审核期间商店里仍展示旧版本，不会下架。
+
+### 提前担心、实际没发生的事
+
+首审前担心两处被挑，结果一次过，两处都没被追问。留档，下次发版不必再纠结：
+
+- **Category 填 Accessibility**，功能是暗色模式。暗色确实和视觉舒适沾边，但这个分类下主流是高对比、屏幕阅读器类工具。真被问就把 Category 改成 Productivity 再提，改这一个字段会重新走审核。
+- **Languages 只填 English (United States)**，而界面是中文。认证备注里写明是有意为之，没被追问。若以后被问到，补一份 zh-CN 的列表即可，不影响包本身。
 
 ## 发新版本
 
@@ -461,7 +474,7 @@ CRX ID 是扩展在 Edge 里的运行时 ID，`edge-extension://mlchkmkainlgkedc
 2. `npm test`，再 `npm run pack` 出 `dist/fin-extension-<版本>.zip`。
 3. 把新包复制到 `docs/`，同步改 `docs/index.html` 里的下载链接与版本号，否则站点上挂的是旧包。
 4. Partner Center 里打开该扩展，走「更新」，上传新包后提交。
-4. 审核期间线上仍是旧版本，通过后自动替换。
+5. 审核期间线上仍是旧版本，通过后自动替换。
 
 两件事容易踩：
 
