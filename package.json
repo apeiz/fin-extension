@@ -10,5 +10,9 @@
     "pack": "python tools/pack-extension.py",
     "icons": "python tools/make_icons.py",
     "license": "node tools/make-license.js"
+  },
+  "devDependencies": {
+    "jsdom": "^31.0.0",
+    "puppeteer-core": "^25.16.0"
   }
 }

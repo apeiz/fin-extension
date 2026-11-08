@@ -5,7 +5,7 @@
  * 并注入假的 chrome API，让列表和开关显示出真实内容后截图。
  * 改完 ui.css 后跑一次即可对比观感。
  *
- * 运行：NODE_PATH=<workspace>/node_modules node tools/preview-ui.js
+ * 运行：node tools/preview-ui.js
  */
 'use strict';
 
@@ -13,15 +13,26 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// 依赖装在托管目录里，不设 NODE_PATH 也能跑
+// 扩展本身零依赖，截图工具借用网页应用已装的依赖，两者是同级目录
 function loadDep(name) {
   try {
     return require(name);
   } catch (e) {
-    const base =
-      process.env.NODE_PATH ||
-      path.join(os.homedir(), '.workbuddy', 'binaries', 'node', 'workspace', 'node_modules');
-    return require(path.join(base, name));
+    const bases = [
+      process.env.NODE_PATH,
+      path.resolve(__dirname, '..', '..', 'fall-in-night', 'node_modules'),
+      path.join(os.homedir(), 'AppData', 'Roaming', 'npm', 'node_modules'),
+      '/usr/local/lib/node_modules',
+      '/usr/lib/node_modules'
+    ].filter(Boolean);
+    for (const base of bases) {
+      try {
+        return require(path.join(base, name));
+      } catch (err) {
+        // 换下一个
+      }
+    }
+    throw new Error('找不到依赖 ' + name + '，请先 npm i -g ' + name + ' 或设置 NODE_PATH');
   }
 }
 
@@ -37,7 +48,7 @@ const MOCK = `
     enabled: true,
     allSites: false,
     sites: [
-      { host: '*.workbuddy.cn', enabled: true },
+      { host: '*.sspai.com', enabled: true },
       { host: '*.163.com', enabled: true },
       { host: '*.csdn.net', enabled: true }
     ],

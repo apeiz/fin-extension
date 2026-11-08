@@ -3,7 +3,7 @@
  *
  * 产出到 store/：
  *   01-site.png            1280x800  真实站点入夜后整屏
- *   02-compare-workbuddy   1280x800  左右对比
+ *   02-compare-sspai       1280x800  左右对比
  *   03-compare-163         1280x800  图文站对比，展示图片保色
  *   04-popup.png           1280x800  弹窗叠加在站点上
  *   05-options.png         1280x800  设置页：站点列表
@@ -31,10 +31,22 @@ function loadDep(name) {
   try {
     return require(name);
   } catch (e) {
-    const base =
-      process.env.NODE_PATH ||
-      path.join(os.homedir(), '.workbuddy', 'binaries', 'node', 'workspace', 'node_modules');
-    return require(path.join(base, name));
+    // 扩展本身零依赖，截图工具借用网页应用已装的依赖，两者是同级目录
+    const bases = [
+      process.env.NODE_PATH,
+      path.resolve(__dirname, '..', '..', 'fall-in-night', 'node_modules'),
+      path.join(os.homedir(), 'AppData', 'Roaming', 'npm', 'node_modules'),
+      '/usr/local/lib/node_modules',
+      '/usr/lib/node_modules'
+    ].filter(Boolean);
+    for (const base of bases) {
+      try {
+        return require(path.join(base, name));
+      } catch (err) {
+        // 换下一个
+      }
+    }
+    throw new Error('找不到依赖 ' + name + '，请先 npm i -g ' + name + ' 或设置 NODE_PATH');
   }
 }
 
@@ -53,9 +65,10 @@ const C = {
   muted: '#9aa2b3'
 };
 
+// 三组 1280x800 底图的缓存键，由网页应用 tools/make-presets.js 生成
 const SHOT_HOSTS = {
-  workbuddy: '1ef0c88a283374fa',
-  csdn: '2a334eb231b1beb5',
+  devpress: '54d96db3b6377612',
+  sspai: 'd3c494c6403e298f',
   netease: '3742deedb74d417c'
 };
 
@@ -102,9 +115,9 @@ function mockApi(host, allSites) {
     enabled: true,
     allSites: ${allSites ? 'true' : 'false'},
     sites: [
-      { host: '*.workbuddy.cn', enabled: true },
       { host: '*.163.com', enabled: true },
-      { host: '*.csdn.net', enabled: true }
+      { host: '*.csdn.net', enabled: true },
+      { host: '*.sspai.com', enabled: true }
     ],
     whitelist: ${allSites ? "['*.bilibili.com', 'www.youtube.com']" : '[]'},
     invertMedia: true,
@@ -158,10 +171,10 @@ async function renderUI(browser, opts) {
 
 /* ---------- 01 整屏效果 ---------- */
 const htmlSite = () => page(`
-  <img class="abs" src="${fileUri(shot('workbuddy', 'after'))}"
+  <img class="abs" src="${fileUri(shot('devpress', 'after'))}"
        style="inset:0;width:1280px;height:800px">
   <div class="abs pill" style="right:36px;bottom:32px">
-    <i></i>入夜后 · www.workbuddy.cn
+    <i></i>入夜后 · devpress.csdn.net
   </div>
 `);
 
@@ -250,7 +263,7 @@ const htmlPromoSmall = () => page(`
     </div>
     <div class="abs" style="right:22px;top:76px;width:168px;border-radius:10px;overflow:hidden;
          box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08)">
-      <img src="${fileUri(shot('workbuddy', 'after'))}" style="width:168px;display:block">
+      <img src="${fileUri(shot('sspai', 'after'))}" style="width:168px;display:block">
     </div>
   `, 'body { width:440px; height:280px; }');
 
@@ -278,7 +291,7 @@ const htmlPromoLarge = () => page(`
 
     <div class="abs" style="right:62px;top:62px;width:700px;border-radius:14px;overflow:hidden;
          box-shadow:0 30px 74px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.07)">
-      <img src="${fileUri(shot('workbuddy', 'after'))}" style="width:700px;display:block">
+      <img src="${fileUri(shot('sspai', 'after'))}" style="width:700px;display:block">
     </div>
   `, 'body { width:1400px; height:560px; }');
 
@@ -298,7 +311,7 @@ async function snap(browser, html, name, w, h) {
 async function main() {
   // 对比图与宣传图依赖网页应用预置的 1280x800 抓图；
   // 单独 clone 本仓库时这层目录不存在，此时只生成界面类素材。
-  const hasShots = ['workbuddy', 'netease'].every(
+  const hasShots = ['sspai', 'netease', 'devpress'].every(
     (k) => fs.existsSync(shot(k, 'before')) && fs.existsSync(shot(k, 'after'))
   );
   if (!hasShots) {
@@ -326,7 +339,7 @@ async function main() {
     });
     const optionsBuf = await renderUI(browser, {
       page: 'options.html',
-      host: 'www.workbuddy.cn',
+      host: 'sspai.com',
       width: 900,
       height: 1300,
       dsf: 1,
@@ -335,7 +348,7 @@ async function main() {
     });
     const optionsAllBuf = await renderUI(browser, {
       page: 'options.html',
-      host: 'www.workbuddy.cn',
+      host: 'sspai.com',
       width: 900,
       height: 1500,
       dsf: 1,
@@ -345,9 +358,9 @@ async function main() {
 
     if (hasShots) {
       await snap(browser, htmlSite(), '01-site.png', 1280, 800);
-      await snap(browser, htmlCompare('workbuddy',
+      await snap(browser, htmlCompare('sspai',
         '左边原样，右边入夜', '同一个页面、同一个滚动位置，只是换了一套颜色',
-        'www.workbuddy.cn'), '02-compare-workbuddy.png', 1280, 800);
+        'sspai.com'), '02-compare-sspai.png', 1280, 800);
       await snap(browser, htmlCompare('netease',
         '图片和视频不动，只有文字和背景翻过来', '彩色照片保持原样，所以不会出现反色的怪画面',
         'www.163.com'), '03-compare-163.png', 1280, 800);

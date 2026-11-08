@@ -9,7 +9,7 @@
  * 所以配置读写改成在 content script 的隔离上下文里调 chrome.storage 完成。
  * 界面交互（选项页、弹窗）另由 test/ui.test.js 用 jsdom 覆盖。
  *
- * 运行：NODE_PATH=<workspace>/node_modules node test/e2e.js
+ * 运行：npm run test:e2e（需要先 npm install，并装好 Chrome）
  */
 'use strict';
 
@@ -19,17 +19,7 @@ const path = require('path');
 const os = require('os');
 const png = require('./png.js');
 
-// 依赖装在托管目录里，不设 NODE_PATH 也能跑
-function loadDep(name) {
-  try {
-    return require(name);
-  } catch (e) {
-    const base =
-      process.env.NODE_PATH ||
-      path.join(os.homedir(), '.workbuddy', 'binaries', 'node', 'workspace', 'node_modules');
-    return require(path.join(base, name));
-  }
-}
+const { loadDep } = require('./deps.js');
 
 const puppeteer = loadDep('puppeteer-core');
 
@@ -203,7 +193,7 @@ async function main() {
       assert(settings && settings.enabled === true, '总开关默认应开启');
       assert(
         settings.sites.length === 3 &&
-          settings.sites.map((x) => x.host).join('|') === '*.workbuddy.cn|*.163.com|*.csdn.net',
+          settings.sites.map((x) => x.host).join('|') === '*.163.com|*.csdn.net|*.sspai.com',
         '实际列表：' + JSON.stringify(settings && settings.sites)
       );
       assert(settings.invertMedia === true, '默认应开启图片/画布还原');

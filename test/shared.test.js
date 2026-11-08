@@ -87,12 +87,12 @@ check('默认配置: 与网页应用一致的三个站点（含子域）', () =>
   const s = SD.normalizeSettings(undefined);
   assert.strictEqual(s.enabled, true);
   assert.strictEqual(s.sites.length, 3);
-  assert.strictEqual(s.sites[0].host, '*.workbuddy.cn');
-  assert.strictEqual(s.sites[1].host, '*.163.com');
-  assert.strictEqual(s.sites[2].host, '*.csdn.net');
-  assert.strictEqual(SD.isEnabledFor(s, 'www.workbuddy.cn'), true);
+  assert.strictEqual(s.sites[0].host, '*.163.com');
+  assert.strictEqual(s.sites[1].host, '*.csdn.net');
+  assert.strictEqual(s.sites[2].host, '*.sspai.com');
   assert.strictEqual(SD.isEnabledFor(s, 'www.163.com'), true);
-  assert.strictEqual(SD.isEnabledFor(s, 'news.csdn.net'), true, '子域也要覆盖');
+  assert.strictEqual(SD.isEnabledFor(s, 'news.163.com'), true, '子域也要覆盖');
+  assert.strictEqual(SD.isEnabledFor(s, 'sspai.com'), true, '裸域也要覆盖');
   assert.strictEqual(SD.isEnabledFor(s, 'www.baidu.com'), false);
 });
 
@@ -107,7 +107,7 @@ check('旧的聚宽单条默认会迁移成三条新默认', () => {
   };
   const s = SD.normalizeSettings(legacy);
   assert.strictEqual(s.sites.length, 3);
-  assert.strictEqual(s.sites[0].host, '*.workbuddy.cn');
+  assert.strictEqual(s.sites[0].host, '*.163.com');
 });
 
 check('用户自己维护的列表不会被迁移改写', () => {
@@ -187,7 +187,7 @@ check('脏数据被清理: 去重、去空、去非法项', () => {
 check('非对象的 sites 才回退默认', () => {
   const s = SD.normalizeSettings({ sites: 'oops' });
   assert.strictEqual(s.sites.length, 3);
-  assert.strictEqual(s.sites[0].host, '*.workbuddy.cn');
+  assert.strictEqual(s.sites[0].host, '*.163.com');
 });
 
 // ---------- 精确优先于通配 ----------

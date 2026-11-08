@@ -10,9 +10,9 @@
   // 首次安装时的默认站点，与网页应用（fall-in-night）的示例保持一致。
   // 用通配：这些站点的子域（news.163.com、fund 之类）经常承载 iframe，只写 www 会漏。
   var DEFAULT_SITES = [
-    { host: '*.workbuddy.cn', enabled: true },
     { host: '*.163.com', enabled: true },
-    { host: '*.csdn.net', enabled: true }
+    { host: '*.csdn.net', enabled: true },
+    { host: '*.sspai.com', enabled: true }
   ];
 
   // 整页反色的核心滤镜：先反相，再旋转 180 度色相，让彩色（红绿）回到原本的色系。
@@ -370,7 +370,7 @@
       }
     }
 
-    // 旧默认只有一条聚宽规则（精确 www 或通配）。默认站点换成 workbuddy / 163 / csdn
+    // 旧默认只有一条聚宽规则（精确 www 或通配）。默认站点换成 163 / csdn / sspai
     // 之后，仍是这条未改过的旧默认就升级成新默认；用户自己维护过的列表一律不动。
     var isOldJoinquantDefault =
       out.sites.length === 1 &&

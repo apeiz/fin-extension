@@ -16,7 +16,7 @@ python tools/make_icons.py --size 300 --out store/logo-300.png
 | --- | --- | --- |
 | `logo-300.png` | 300x300 | Extension logo，每种语言必填 |
 | `01-site.png` | 1280x800 | 真实站点入夜后整屏 |
-| `02-compare-workbuddy.png` | 1280x800 | 左右对比 |
+| `02-compare-sspai.png` | 1280x800 | 左右对比 |
 | `03-compare-163.png` | 1280x800 | 图文站对比，展示图片保色 |
 | `04-popup.png` | 1280x800 | 弹窗叠加在站点上 |
 | `05-options.png` | 1280x800 | 设置页：站点列表 |

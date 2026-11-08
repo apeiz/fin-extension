@@ -5,25 +5,14 @@
  * 所以选项页与弹窗的交互在这里验证：加载真实 HTML，挂上假的 chrome API，
  * 手动执行 shared.js / options.js / popup.js，模拟点击与输入。
  *
- * 运行：NODE_PATH=<workspace>/node_modules node test/ui.test.js
+ * 运行：npm test（需要先 npm install）
  */
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
-const os = require('os');
 
-// 依赖装在托管目录里，不设 NODE_PATH 也能跑
-function loadDep(name) {
-  try {
-    return require(name);
-  } catch (e) {
-    const base =
-      process.env.NODE_PATH ||
-      path.join(os.homedir(), '.workbuddy', 'binaries', 'node', 'workspace', 'node_modules');
-    return require(path.join(base, name));
-  }
-}
+const { loadDep } = require('./deps.js');
 
 const { JSDOM } = loadDep('jsdom');
 
@@ -134,7 +123,7 @@ async function testOptions() {
       (el) => el.textContent
     );
     assert(
-      hosts.join('|') === '*.workbuddy.cn|*.163.com|*.csdn.net',
+      hosts.join('|') === '*.163.com|*.csdn.net|*.sspai.com',
       '实际：' + JSON.stringify(hosts)
     );
   });
@@ -150,7 +139,7 @@ async function testOptions() {
 
     const hosts = Array.from(doc.querySelectorAll('.site-host')).map((el) => el.textContent);
     assert(
-      hosts.join('|') === '*.workbuddy.cn|*.163.com|*.csdn.net|www.baidu.com',
+      hosts.join('|') === '*.163.com|*.csdn.net|*.sspai.com|www.baidu.com',
       '列表：' + hosts.join('|')
     );
     assert(
@@ -165,8 +154,8 @@ async function testOptions() {
     const dom = await loadPage('options.html', ['shared.js', 'options.js'], chromeMock);
     const doc = dom.window.document;
 
-    // 默认已含 *.workbuddy.cn，大小写变体应被识别为同一条
-    doc.getElementById('newHost').value = '*.WorkBuddy.CN';
+    // 默认已含 *.sspai.com，大小写变体应被识别为同一条
+    doc.getElementById('newHost').value = '*.SSPAI.COM';
     doc.getElementById('addBtn').click();
     await tick(30);
 
@@ -325,7 +314,7 @@ async function testOptions() {
 
     const hosts = Array.from(doc.querySelectorAll('.site-host')).map((el) => el.textContent);
     assert(
-      hosts.join('|') === '*.workbuddy.cn|*.163.com|*.csdn.net',
+      hosts.join('|') === '*.163.com|*.csdn.net|*.sspai.com',
       '重置后列表：' + hosts.join('|')
     );
     assert(chromeMock.store.settings.enabled === true, '总开关未重置');
@@ -437,11 +426,11 @@ async function testPopup() {
   console.log('--- 工具栏弹窗 ---');
 
   await check('列表内的站点显示为已开启', async () => {
-    const chromeMock = makeChromeMock(null, { tabUrl: 'https://www.workbuddy.cn/user/1' });
+    const chromeMock = makeChromeMock(null, { tabUrl: 'https://sspai.com/post/1' });
     const dom = await loadPage('popup.html', ['shared.js', 'popup.js'], chromeMock);
     const doc = dom.window.document;
 
-    assert(doc.getElementById('currentHost').textContent === 'www.workbuddy.cn', '域名显示错误');
+    assert(doc.getElementById('currentHost').textContent === 'sspai.com', '域名显示错误');
     assert(doc.getElementById('siteToggle').checked === true, '开关状态错误');
     assert(doc.getElementById('siteToggle').disabled === false, '开关不该被禁用');
   });
