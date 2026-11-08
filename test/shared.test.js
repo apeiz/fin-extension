@@ -83,7 +83,7 @@ check('hostMatch: 通配规则不会误伤相似后缀', () => {
 
 // ---------- 默认配置 ----------
 
-check('默认配置: 与网页应用一致的三个站点（含子域）', () => {
+check('默认配置: 三个默认站点（含子域）', () => {
   const s = SD.normalizeSettings(undefined);
   assert.strictEqual(s.enabled, true);
   assert.strictEqual(s.sites.length, 3);

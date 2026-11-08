@@ -14,7 +14,7 @@
  * 图标另由 tools/make_icons.py 生成：
  *   python tools/make_icons.py --size 300 --out store/logo-300.png
  *
- * 底图复用网页应用预置的三组 1280x800 截图，比现场抓取稳定，也不受网络影响。
+ * 底图用预置的三组 1280x800 截图，比现场抓取稳定，也不受网络影响。
  * 扩展自身页面在自动化环境里无法直接导航，这里用 file:// 打开真实 HTML 并注入
  * 假的 chrome API，让界面显示出真实内容后再合成。
  *
@@ -31,7 +31,7 @@ function loadDep(name) {
   try {
     return require(name);
   } catch (e) {
-    // 扩展本身零依赖，截图工具借用网页应用已装的依赖，两者是同级目录
+    // 扩展本身零依赖，截图工具借用已装的 node_modules
     const bases = [
       process.env.NODE_PATH,
       path.resolve(__dirname, '..', '..', 'fall-in-night', 'node_modules'),
@@ -53,7 +53,12 @@ function loadDep(name) {
 const puppeteer = loadDep('puppeteer-core');
 
 const ROOT = path.resolve(__dirname, '..');
-const SHOTS = path.resolve(ROOT, '..', 'fall-in-night', 'public', 'shots');
+// 底图：优先用仓库自带素材，没有就退回同级抓图工具的产出目录
+const SHOT_DIRS = [
+  path.resolve(ROOT, 'test', 'fixtures', 'shots'),
+  path.resolve(ROOT, '..', 'fall-in-night', 'public', 'shots')
+];
+const SHOTS = SHOT_DIRS.find((d) => fs.existsSync(d)) || SHOT_DIRS[0];
 const OUT = path.join(ROOT, 'store');
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 
@@ -65,7 +70,7 @@ const C = {
   muted: '#9aa2b3'
 };
 
-// 三组 1280x800 底图的缓存键，由网页应用 tools/make-presets.js 生成
+// 三组 1280x800 底图的缓存键
 const SHOT_HOSTS = {
   devpress: '54d96db3b6377612',
   sspai: 'd3c494c6403e298f',
@@ -258,7 +263,7 @@ const htmlPromoSmall = () => page(`
         先看到暗下来<br>是什么样
       </div>
       <div style="margin-top:10px;font-size:11px;color:${C.gold};letter-spacing:.02em">
-        30 KB · 不拖慢网页
+        不到 30 KB · 不拖慢网页
       </div>
     </div>
     <div class="abs" style="right:22px;top:76px;width:168px;border-radius:10px;overflow:hidden;
@@ -285,7 +290,7 @@ const htmlPromoLarge = () => page(`
         在决定改之前<br>先看到改完是什么样
       </div>
       <div style="margin-top:18px;font-size:15px;color:${C.muted};letter-spacing:.02em">
-        一键切换为暗色 · 图片保持原色 · 30 KB 不拖慢网页
+        一键切换为暗色 · 图片保持原色 · 不到 30 KB
       </div>
     </div>
 
@@ -309,14 +314,14 @@ async function snap(browser, html, name, w, h) {
 }
 
 async function main() {
-  // 对比图与宣传图依赖网页应用预置的 1280x800 抓图；
-  // 单独 clone 本仓库时这层目录不存在，此时只生成界面类素材。
+  // 对比图与宣传图依赖预置的 1280x800 抓图；
+  // 目录不存在时只生成界面类素材，不中断。
   const hasShots = ['sspai', 'netease', 'devpress'].every(
     (k) => fs.existsSync(shot(k, 'before')) && fs.existsSync(shot(k, 'after'))
   );
   if (!hasShots) {
     console.log('[跳过] 未找到 ' + SHOTS + ' 的底图，只生成界面类素材');
-    console.log('       底图由网页应用抓取产生，与扩展仓库分开存放');
+    console.log('       把 before/after 截图放进 test/fixtures/shots 即可补上');
   }
 
   if (!fs.existsSync(OUT)) fs.mkdirSync(OUT, { recursive: true });

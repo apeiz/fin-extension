@@ -116,7 +116,7 @@ async function loadPage(htmlFile, scripts, chromeMock, beforeScript) {
 async function testOptions() {
   console.log('--- 选项页 ---');
 
-  await check('首次打开列出默认站点（与网页应用一致的三条）', async () => {
+  await check('首次打开列出默认站点（三条）', async () => {
     const chromeMock = makeChromeMock(null);
     const dom = await loadPage('options.html', ['shared.js', 'options.js'], chromeMock);
     const hosts = Array.from(dom.window.document.querySelectorAll('.site-host')).map(

@@ -189,7 +189,7 @@ async function main() {
       assert(settings !== undefined, '读不到 settings，content script 可能未运行');
     });
 
-    check('首次安装的默认配置与网页应用一致', () => {
+    check('首次安装的默认配置符合预期', () => {
       assert(settings && settings.enabled === true, '总开关默认应开启');
       assert(
         settings.sites.length === 3 &&

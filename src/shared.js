@@ -7,7 +7,7 @@
 (function (global) {
   'use strict';
 
-  // 首次安装时的默认站点，与网页应用（fall-in-night）的示例保持一致。
+  // 首次安装时的默认站点。
   // 用通配：这些站点的子域（news.163.com、fund 之类）经常承载 iframe，只写 www 会漏。
   var DEFAULT_SITES = [
     { host: '*.163.com', enabled: true },

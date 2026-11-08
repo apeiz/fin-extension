@@ -13,7 +13,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-// 扩展本身零依赖，截图工具借用网页应用已装的依赖，两者是同级目录
+// 扩展本身零依赖，截图工具借用已装的 node_modules
 function loadDep(name) {
   try {
     return require(name);

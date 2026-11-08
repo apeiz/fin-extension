@@ -50,7 +50,7 @@ npm run pack        # dist/fin-extension-<版本>.zip
 ```
 name:        Fall in Night
 description: Turn chosen sites dark without slowing them down. Photos keep their color.
-             30 KB, no tracking, no network requests.
+             Under 30 KB, no tracking, no network requests.
 ```
 
 `short_name` 已移除：Chrome 建议不超过 12 字符，`Fall in Night` 是 13 个，留着会被截断。
@@ -82,7 +82,7 @@ description: Turn chosen sites dark without slowing them down. Photos keep their
 >
 > **Why it does not slow pages down**
 >
-> There are two ways to darken a page: parse its stylesheets and recompute every color, or parse nothing and put one filter over it. Fall in Night takes the second path. It does not read `CSSStyleSheet`, does not compute colors, does not build a replacement stylesheet. It inserts one `filter: invert(.92) hue-rotate(180deg)` rule at the top of the document and hands the rest to the compositor. The whole package is 30 KB, because that parsing and color-mapping code is not in it.
+> There are two ways to darken a page: parse its stylesheets and recompute every color, or parse nothing and put one filter over it. Fall in Night takes the second path. It does not read `CSSStyleSheet`, does not compute colors, does not build a replacement stylesheet. It inserts one `filter: invert(.92) hue-rotate(180deg)` rule at the top of the document and hands the rest to the compositor. The whole package is under 30 KB, because that parsing and color-mapping code is not in it.
 >
 > The trade-off is stated plainly: colors come out slightly desaturated. Red `#d92b2b` becomes `(184,67,67)` - same hue, lower saturation. Greyscale text and borders are exact.
 >
@@ -108,6 +108,10 @@ description: Turn chosen sites dark without slowing them down. Photos keep their
 > 4. Native select dropdowns stay light. The browser draws them and an extension cannot reach them.
 > 5. A cross-origin iframe is judged by its own domain, so it needs its own rule.
 >
+**Interface language**
+>
+> The interface is currently in Chinese only. The extension works the same regardless of your browser language; an English interface is planned for a later update. This is stated here rather than left for you to discover after installing.
+
 > **Privacy**
 >
 > No data is collected, no browsing history is uploaded, no network request is made, there is no remote code and no analytics SDK. Settings live in `chrome.storage.local` on your device. Styles are injected only into pages that match your list; every other page gets nothing.
@@ -146,7 +150,7 @@ description: Turn chosen sites dark without slowing them down. Photos keep their
 >
 > 让网页变暗有两条路：解析页面的样式表、把每个颜色重算一遍；或者不解析，直接套一层滤镜。入夜走后者。
 >
-> 它不读页面的 `CSSStyleSheet`，不计算任何颜色，不生成替换样式表，只在页面最前面插一条 `filter: invert(.92) hue-rotate(180deg)`，剩下的交给浏览器合成器。所以打开页面时没有 JavaScript 在主线程上做样式分析，首屏不会因为扩展而延迟。整个包 30 KB，省掉的就是那套解析与颜色映射的代码。
+> 它不读页面的 `CSSStyleSheet`，不计算任何颜色，不生成替换样式表，只在页面最前面插一条 `filter: invert(.92) hue-rotate(180deg)`，剩下的交给浏览器合成器。所以打开页面时没有 JavaScript 在主线程上做样式分析，首屏不会因为扩展而延迟。整个包不到 30 KB，省掉的就是那套解析与颜色映射的代码。
 >
 > 代价写在明处：彩色会轻微褪色，红色 `#d92b2b` 变成 `(184,67,67)`，色相保持、饱和度下降。纯灰阶的文字和边框是精确的，红涨绿跌不会颠倒。
 >
@@ -335,8 +339,8 @@ opens only when the user clicks it.
 https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md
 ```
 
-这个地址已实测可匿名访问（HTTP 200）。注意：仓库里当前是 1.0.0 的版本，
-本地 1.0.1 的隐私政策（补了爱发电跳转说明）还没推上去，推完内容才一致。
+改成 Pages 地址后：`https://apeiz.github.io/fin-extension/privacy.html`，
+与站点的下载页同源。用 GitHub 仓库地址时校验器常判 unreachable，原因见上一节。
 
 ### 6. I certify the following disclosures are true
 

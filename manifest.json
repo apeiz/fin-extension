@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Fall in Night",
   "version": "1.0.2",
-  "description": "Turn chosen sites dark without slowing them down. Photos keep their color. 30 KB, no tracking, no network requests.",
+  "description": "Turn chosen sites dark without slowing them down. Photos keep their color. Under 30 KB, no tracking, no network requests.",
   "minimum_chrome_version": "96",
   "permissions": ["storage", "activeTab"],
   "content_scripts": [
