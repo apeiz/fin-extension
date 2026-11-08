@@ -1,0 +1,22 @@
+# 依赖
+node_modules/
+package-lock.json
+
+# 测试产物：截图体积大，属于本地验货材料，不入库
+test/artifacts/
+test/shots/
+
+# 打包输出
+dist/
+downloads/
+*.zip
+
+# 商店素材（本地生成，tools/store-assets.js）
+store/
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp

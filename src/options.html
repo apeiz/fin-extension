@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>入夜 - 设置</title>
+    <link rel="stylesheet" href="ui.css" />
+  </head>
+  <body class="options">
+    <div class="wrap">
+      <div class="page-head">
+        <div>
+          <h1>入夜</h1>
+          <p class="sub">让网页沉进夜色。列表内的站点打开时自动变暗，也可以一键让所有网站入夜。</p>
+        </div>
+        <span class="save-state" id="saveState">已保存</span>
+      </div>
+
+      <div class="card all-sites-card">
+        <div class="toggle-row">
+          <div class="toggle-copy">
+            <div class="t">所有网站入夜</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="allSites" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <p class="caveat">
+          所有需要精确原色及视频网站均不适合本扩展，请使用类似 B 站自身的深色主题。
+        </p>
+
+        <div class="whitelist" id="whitelistBlock" hidden>
+          <div class="wl-head">
+            <span class="wl-title">白名单 <em class="quota" id="wlQuota">0/3</em></span>
+            <span class="wl-desc">列入的网站保持原样，不会被入夜</span>
+          </div>
+
+          <div class="add-row">
+            <input type="text" id="newWhitelist" placeholder="例如 www.bilibili.com 或 *.bilibili.com" />
+            <button id="addWhitelistBtn">添加</button>
+          </div>
+
+          <ul class="site-list" id="whitelistList"></ul>
+          <div class="empty" id="whitelistEmpty" hidden>白名单为空，所有网站都会入夜。</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">指定网站入夜 <em class="quota" id="siteQuota">0/5</em></div>
+        <p class="card-desc">
+          填域名即可，粘贴完整网址也可以，会自动截成域名。以 <code>*.example.com</code>
+          形式填写可覆盖该域及其所有子域。同一域名只要有一条启用的规则就生效，精确域名优先于通配规则。
+        </p>
+
+        <div class="add-row">
+          <input type="text" id="newHost" placeholder="例如 www.joinquant.com 或 *.joinquant.com" />
+          <button class="primary" id="addBtn">添加</button>
+        </div>
+        <p class="add-notice" id="addNotice" hidden></p>
+
+        <ul class="site-list" id="siteList"></ul>
+        <div class="empty" id="emptyHint" hidden>列表为空，目前没有任何站点会变暗。</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">显示方式</div>
+        <p class="card-desc">整页反色会让图片和图表一起变成负片，下面几项负责把它们还原成原本的配色。</p>
+
+        <div class="toggle-row">
+          <div class="toggle-copy">
+            <div class="t">保留原本深色的区块</div>
+            <div class="d">
+              深色导航条、深色页脚被反色后会变成亮块，在暗色页面上比原来还刺眼。开启这一项会把这类
+              区块恢复成本来的深色。
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="keepDarkBlocks" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-copy">
+            <div class="t">图片 / 视频 / 画布保持原色</div>
+            <div class="d">默认开启。画布必须还原，否则 K 线图的红绿会颠倒。</div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="invertMedia" />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div class="toggle-copy">
+            <div class="t">SVG 也保持原色</div>
+            <div class="d">
+              默认关闭。内联 SVG 多为图标，跟随整页反色才能在暗底上看清；但用 SVG 绘制的 K
+              线图会因此红绿颠倒，需要精确配色时再开启。
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="invertSvg" />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">自定义修正 CSS</div>
+        <p class="card-desc">
+          反色方案在个别站点会有背景图被反色、固定定位元素错位之类的残留问题，可以在这里逐站补救。
+          这一段会追加到所有已启用站点的样式末尾，用 !important 即可覆盖。
+        </p>
+        <textarea
+          id="customCss"
+          spellcheck="false"
+          placeholder="/* 例：只对某个站点生效 */&#10;/* body { font-size: 14px !important; } */"
+        ></textarea>
+        <p class="field-hint">留空表示不追加。改动会在停止输入 500 毫秒后自动保存。</p>
+      </div>
+
+      <div class="card license-card">
+        <div class="card-title">站点数量</div>
+        <div class="lic-state" id="licState">
+          <span class="lic-badge" id="licBadge">免费版</span>
+          <span class="lic-desc" id="licDesc">可保存 5 个站点、3 条白名单</span>
+        </div>
+
+        <div class="lic-active" id="licActive" hidden>
+          <div class="lic-code-row">
+            <span class="lic-key">授权码</span>
+            <code id="licCode"></code>
+            <button class="ghost small" id="licRemove">取消激活</button>
+          </div>
+        </div>
+
+        <div class="lic-form" id="licForm">
+          <p class="card-desc">
+            需要更多站点时，可以赞助一下换取授权码，激活后不再限制数量。授权码不绑定设备，换电脑也能用。
+          </p>
+          <div class="add-row">
+            <input type="text" id="licInput" placeholder="YUE7-K3M9-PQ4T" maxlength="14" spellcheck="false" />
+            <button class="primary" id="licBtn">激活</button>
+          </div>
+          <p class="add-notice" id="licNotice" hidden></p>
+          <p class="field-hint">
+            赞助入口：<a href="https://afdian.com/a/fanqiu" target="_blank" rel="noopener">afdian.com/a/fanqiu</a>
+          </p>
+        </div>
+      </div>
+
+      <div class="foot-row">
+        <button class="ghost" id="resetBtn">恢复默认设置</button>
+      </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

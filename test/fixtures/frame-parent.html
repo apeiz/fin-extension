@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>整屏 iframe 父页面（测试）</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #21262d;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        font-size: 13px;
+      }
+      .top {
+        background: rgb(33, 48, 94);
+        color: #ffffff;
+        padding: 8px 16px;
+      }
+      iframe {
+        display: block;
+        width: 100%;
+        height: 420px;
+        border: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top" id="parentBar">父页面深色条</div>
+    <!-- 同域 iframe：模拟聚宽 /research 用整屏 iframe 承载 Jupyter -->
+    <iframe id="appFrame" src="frame-child.html"></iframe>
+  </body>
+</html>

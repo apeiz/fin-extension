@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "入夜 Fall in Night",
+  "short_name": "入夜",
+  "version": "1.0.0",
+  "description": "入夜 Fall in Night：轻量地把指定网站切换为暗色，不解析样式表、不拖慢网页。图片视频保持原色。",
+  "minimum_chrome_version": "96",
+  "permissions": ["storage", "activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/shared.js", "src/dark.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_title": "入夜",
+    "default_popup": "src/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

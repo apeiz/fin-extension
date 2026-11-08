@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>暗色模式测试页</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        background: #ffffff;
+        color: #21262d;
+      }
+      header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        /* 与聚宽导航栏同款的深蓝，用 rgb(33,48,94) 这类纯色背景 */
+        background: rgb(33, 48, 94);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        padding: 0 22px;
+        font-size: 14px;
+        z-index: 10;
+      }
+      footer#siteFooter {
+        background: rgb(28, 34, 51);
+        color: #c9d1e0;
+        padding: 22px;
+        font-size: 12px;
+        line-height: 1.9;
+      }
+      main {
+        padding: 78px 22px 60px;
+      }
+      .card {
+        background: #f6f7f9;
+        border: 1px solid #e3e6eb;
+        border-radius: 8px;
+        padding: 16px 18px;
+        margin-bottom: 16px;
+      }
+      h1 {
+        font-size: 18px;
+        margin: 0 0 8px;
+      }
+      p {
+        margin: 6px 0;
+        font-size: 13px;
+        line-height: 1.7;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13px;
+      }
+      th,
+      td {
+        border-bottom: 1px solid #e3e6eb;
+        padding: 8px 6px;
+        text-align: left;
+      }
+      th {
+        color: #5b6472;
+        font-weight: 600;
+      }
+      .up {
+        color: #d92b2b;
+        font-weight: 700;
+      }
+      .down {
+        color: #1e8e3e;
+        font-weight: 700;
+      }
+      .row-media {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+      .swatches {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .swatch {
+        width: 52px;
+        height: 30px;
+        border-radius: 4px;
+        font-size: 10px;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .filler {
+        height: 900px;
+        background: repeating-linear-gradient(
+          to bottom,
+          #ffffff 0,
+          #ffffff 58px,
+          #fafbfc 58px,
+          #fafbfc 60px
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <header id="fixedBar">固定导航栏：滚动时应停在视口顶部</header>
+
+    <main>
+      <!-- 模拟聚宽首页那条毛玻璃导航：半透明白底 + backdrop-filter -->
+      <nav
+        id="glassNav"
+        style="
+          margin-bottom: 16px;
+          height: 52px;
+          border-radius: 10px;
+          background: rgba(255, 255, 255, 0.4);
+          backdrop-filter: blur(8px) saturate(1.5);
+          -webkit-backdrop-filter: blur(8px) saturate(1.5);
+          display: flex;
+          align-items: center;
+          padding: 0 16px;
+          color: #21262d;
+        "
+      >
+        毛玻璃导航条（backdrop-filter），在整页反色下会变成亮斑
+      </nav>
+
+      <div class="card">
+        <h1>白底页面测试</h1>
+        <p>
+          这段正文原本是深灰色文字配白色背景，开启暗色后应当是浅色文字配深色背景，并且保持清晰可读。
+        </p>
+        <p><span class="up">上涨 3.21%</span> ｜ <span class="down">下跌 1.08%</span></p>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr>
+              <th>代码</th>
+              <th>名称</th>
+              <th>涨跌幅</th>
+              <th>成交额</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>601609</td>
+              <td>金田股份</td>
+              <td class="up">+10.02%</td>
+              <td>12.4 亿</td>
+            </tr>
+            <tr>
+              <td>002108</td>
+              <td>沧州明珠</td>
+              <td class="down">-2.31%</td>
+              <td>6.8 亿</td>
+            </tr>
+            <tr>
+              <td>000001</td>
+              <td>平安银行</td>
+              <td class="up">+1.15%</td>
+              <td>31.2 亿</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="row-media">
+          <img
+            id="testImg"
+            width="200"
+            height="80"
+            alt="三色块图片"
+            src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='80'%3E%3Crect x='0' y='0' width='66' height='80' fill='%23d92b2b'/%3E%3Crect x='67' y='0' width='66' height='80' fill='%231e8e3e'/%3E%3Crect x='134' y='0' width='66' height='80' fill='%231a4fd6'/%3E%3C/svg%3E"
+          />
+          <canvas id="kline" width="220" height="80"></canvas>
+        </div>
+        <p style="margin-top: 12px; color: #5b6472">
+          左边是 img 图片，右边是 canvas 绘制的涨跌柱。两者都应保持原始红绿，不应变成负片。
+        </p>
+        <div class="swatches">
+          <div class="swatch" style="background: #d92b2b">红</div>
+          <div class="swatch" style="background: #1e8e3e">绿</div>
+          <div class="swatch" style="background: #1a4fd6">蓝</div>
+          <div class="swatch" style="background: #f2b705; color: #21262d">黄</div>
+        </div>
+      </div>
+
+      <div class="filler"></div>
+    </main>
+
+    <footer id="siteFooter">
+      <div>关于 · 帮助 · 友情链接 · 关注我们</div>
+      <div>这是原本就是深色的页脚，用于验证反色后能否恢复原样</div>
+    </footer>
+
+    <script>
+      var c = document.getElementById("kline");
+      var g = c.getContext("2d");
+      g.fillStyle = "#ffffff";
+      g.fillRect(0, 0, 220, 80);
+      var bars = [
+        ["#d92b2b", 14, 22, 16, 46],
+        ["#1e8e3e", 44, 30, 16, 38],
+        ["#d92b2b", 74, 16, 16, 52],
+        ["#1e8e3e", 104, 34, 16, 30],
+        ["#d92b2b", 134, 24, 16, 42],
+        ["#1e8e3e", 164, 38, 16, 26]
+      ];
+      for (var i = 0; i < bars.length; i++) {
+        var b = bars[i];
+        g.fillStyle = b[0];
+        g.fillRect(b[1], b[2], b[3], b[4]);
+      }
+    </script>
+  </body>
+</html>

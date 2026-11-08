@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>iframe 承载的整页应用（测试）</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #21262d;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        font-size: 13px;
+      }
+      .bar {
+        background: rgb(33, 48, 94);
+        color: #ffffff;
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+      .body {
+        padding: 18px;
+      }
+      h2 {
+        font-size: 15px;
+        margin: 0 0 10px;
+      }
+      .swatch-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .swatch {
+        width: 56px;
+        height: 30px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bar" id="childBar">子页面深色工具条</div>
+    <div class="body">
+      <h2 id="childTitle">iframe 内的白底内容</h2>
+      <p>这一段用于验证：整屏 iframe 承载的应用能否一起变暗，且内部图片保持原色。</p>
+      <div class="swatch-row">
+        <div class="swatch" style="background: #d92b2b"></div>
+        <div class="swatch" style="background: #1e8e3e"></div>
+        <div class="swatch" style="background: #1a4fd6"></div>
+      </div>
+    </div>
+  </body>
+</html>

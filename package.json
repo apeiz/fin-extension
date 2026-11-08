@@ -1,0 +1,14 @@
+{
+  "name": "fin-extension",
+  "version": "1.0.0",
+  "description": "入夜 Fall in Night - 轻量的网站深色适配扩展，不解析样式表、不阻塞首屏",
+  "license": "MIT",
+  "scripts": {
+    "test": "node test/lint.test.js && node test/shared.test.js && node test/ui.test.js",
+    "test:e2e": "node test/e2e.js",
+    "preview": "node tools/preview-ui.js",
+    "pack": "python tools/pack-extension.py",
+    "icons": "python tools/make_icons.py",
+    "license": "node tools/make-license.js"
+  }
+}

@@ -1,0 +1,14 @@
+# 统一行尾，避免 Windows 与 macOS 之间 diff 噪音
+* text=auto eol=lf
+
+# Windows 批处理必须 CRLF，否则 cmd 解析异常
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# 二进制
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.zip binary
+*.ico binary
