@@ -20,3 +20,6 @@ store/
 .DS_Store
 Thumbs.db
 *.swp
+
+# 授权码台账（含可用的码，绝不入库）
+licenses/
