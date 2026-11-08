@@ -40,6 +40,17 @@ check('manifest 为 MV3 且包含必要字段', () => {
   assert(manifest.options_ui && manifest.options_ui.page, '缺少 options_ui.page');
 });
 
+check('manifest 与 package.json 的版本号一致', () => {
+  const pkg = JSON.parse(read('package.json'));
+  // 版本号只有一个权威来源：manifest.json（商店读它，pack 脚本按它命名）。
+  // 但它和 package.json 不同步时最难发现，所以这里卡住。
+  assert(
+    pkg.version === manifest.version,
+    'manifest ' + manifest.version + ' 与 package.json ' + pkg.version + ' 不一致'
+  );
+  assert(/^\d+\.\d+\.\d+$/.test(manifest.version), '版本号应为 x.y.z：' + manifest.version);
+});
+
 check('manifest 声明的所有文件都真实存在', () => {
   const files = [];
   (manifest.content_scripts || []).forEach((cs) => {

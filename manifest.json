@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "入夜 Fall in Night",
   "short_name": "入夜",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "入夜 Fall in Night：轻量地把指定网站切换为暗色，不解析样式表、不拖慢网页。图片视频保持原色。",
   "minimum_chrome_version": "96",
   "permissions": ["storage", "activeTab"],

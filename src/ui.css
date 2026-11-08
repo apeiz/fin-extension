@@ -589,6 +589,12 @@ code {
   text-decoration: underline;
 }
 
+/* 赞助入口下面那行说明，单独起一行 */
+.field-note {
+  display: block;
+  margin-top: 2px;
+}
+
 .lic-state {
   display: flex;
   align-items: center;
