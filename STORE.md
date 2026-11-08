@@ -21,12 +21,22 @@ python tools/make_icons.py --size 300 --out store/logo-300.png
 | `04-popup.png` | 1280x800 | 弹窗叠加在站点上 |
 | `05-options.png` | 1280x800 | 设置页：站点列表 |
 | `06-options-all.png` | 1280x800 | 设置页：全部入夜 + 白名单 |
-| `promo-small.png` | 440x280 | 小宣传图 |
+| `promo-small.png` | 440x280 | 小宣传图：左白右黑 + 中间一道金线 + 带金框的图标 |
 | `promo-large.png` | 1400x560 | 大宣传图 |
 
 上传顺序按 01 到 06，最多 6 张，正好。
 
+只重生成其中几张时，把名字写在命令后面：
+
+```bash
+node tools/store-assets.js promo-small
+```
+
 **小宣传图必须传。** 它标着 Optional，但不上传的话扩展不会出现在商店搜索结果里，只能靠直链访问。这是已知的坑。
+
+**小宣传图不用网页底图。** 440x280 在搜索结果里只有两百来像素宽，塞一整屏网页截图后内容是看不清的，没人能从那团模糊里读出「这是暗色模式」，所以只用三个元素：左半暖白、右半近黑、中间一道 3px 金线，图标压在中间。左右纯色缩放后也不糊，实测缩到 220 / 140 / 92 宽都还认得出。
+
+图标外面那圈金线要左右各配一次色：品牌金 `#ffc45c` 压在暖白底上对比只有 1.41，等于看不见；左半改用深一档的 `#b8791c`（对比 3.28），右半仍是品牌金（对比 11.7）。所以代码里画了两个同样的圆角框，各裁掉一半。框的圆角按「图标圆角 + 留白」算，才和图标同心。
 
 ## 包
 
@@ -352,6 +362,50 @@ https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md
 
 三条都成立：扩展没有任何数据外发通道，连网络请求都没有。
 
+## 提交时的认证备注（Certification notes）
+
+Submit 页面上那两问：
+
+| 问题 | 选 |
+| --- | --- |
+| Does a tester need credentials, accounts, or any other info to test your extension? | **No** |
+| Notes for certification (less than 2,000 characters) | 必填，贴下面这段 |
+
+选 No 而不是 Yes：扩展不登录、不取账号、不发请求，装了就能测。选 Yes 会要求填测试账号密码，而我们没有账号可给，等于自找卡点。
+
+但 No 只回答了第一层。审核员真正可能卡的是两件事，都要在备注里先说掉：
+
+- 设置页底部有授权码入口和赞助链接，容易被判成「不付费测不了」。实际免费额度（5 站点 + 3 白名单）够把每个功能走一遍，授权码只是解除数量上限。
+- 界面是中文，而列表是英文。
+
+英文备注全文（1951 字符，按 CRLF 计 1972，都在 2000 以内）：
+
+```
+No account, no credentials and no network access are needed to test this extension.
+
+WHAT IT DOES
+Fall in Night darkens web pages. It applies a CSS color transform to the sites the user lists, and keeps photos, videos and canvases in their original colors. It runs entirely in the browser: no network requests, no analytics, no server, no page content leaves the machine.
+
+HOW TO TEST (2 minutes)
+1. Install and pin it.
+2. Open one of the three sites enabled by default: https://www.163.com or https://www.csdn.net or https://sspai.com
+   The page is already dark on load and photos keep their colors. If they load slowly from your location, add any other site in step 4 and reload.
+3. Click the toolbar icon. The switch at the top of the popup turns the current site dark or back to normal, and the open tab updates at once.
+4. Open the settings page with the button at the bottom of the popup (the only button in the popup). There you can add or remove sites (example.com or *.example.com), turn one site off without deleting it, enable all-sites mode with a whitelist, and toggle the media, SVG, dark-block and custom CSS options.
+5. Reload a page after changing settings to see the new rules.
+
+THE FREE VERSION IS FULLY TESTABLE
+A license code field sits at the bottom of the settings page. A code only raises how many sites can be stored: without one you keep 5 sites and 3 whitelist entries, enough to test every feature. No purchase or code is needed for review; the sponsor link is not a gate.
+
+PERMISSIONS
+storage keeps the site list and switches locally. activeTab reads the current tab URL so the popup can show whether this site is on. The content script matches all URLs because the extension must be able to darken whatever site the user adds; it only edits CSS on sites that are switched on, and reads only the local site list.
+
+OTHER
+Minimum Chromium 96. The interface is in Chinese; the six screenshots show every screen. Under 30 KB.
+```
+
+改版后要重算长度。上限 2000 是按字符算，粘贴时换行可能被计成 CRLF 两字符，所以留的余量要大于行数（21 行）。
+
 ## 提审前检查
 
 - [ ] `manifest.json` 里没有 `update_url`
@@ -362,10 +416,42 @@ https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md
 - [ ] Privacy 页面的六块都已填：Single purpose、storage、activeTab、Remote code、
       Data usage（全部不勾）、Privacy policy URL、三项认证复选框
 - [ ] 上传的 zip 版本与 `CHANGELOG` 顶部那条一致
+- [ ] Submit 页认证备注已贴（见「提交时的认证备注」一节），选项选 No
 
 ## 审核周期
 
 首次提交最长 7 个工作日。审核期间再提交新版本会重新排队，别一边等一边改。
+
+## 提交记录与 ID
+
+| 项 | 值 |
+| --- | --- |
+| 提交时间 | 2026-11-08 19:41 |
+| 版本 | 1.0.2 |
+| 状态 | In review |
+| Store ID | `0RDCKFG2NF9F` |
+| CRX ID | `mlchkmkainlgkedcdqjlfcgfogcllki` |
+| Product ID | `02240301-2e30-4762-a92d-0bb8724a2a5a` |
+| Category | Accessibility |
+| Visibility | Public |
+| Languages | English (United States) |
+
+**Store ID 是发布后直达链接的路径**：
+
+```
+https://microsoftedge.microsoft.com/addons/detail/0RDCKFG2NF9F
+```
+
+未发布时这条会 404（页面上「URL: Will be available once the extension is published」就是这个意思），发布后立刻可用。文档站、README、隐私页里想放「去商店安装」的按钮，先按这个格式写好，发布当天生效，不用改。
+
+CRX ID 是扩展在 Edge 里的运行时 ID，`edge-extension://mlchkmkainlgkedcdqjlfcgfogcllki/` 这种地址用它。注意本地用「加载解压缩的扩展」装进去时是另一个 ID，存储数据不互通，这是正常的。
+
+**审核期间什么别做**：不要点 `Update`（会重新排队），不要点 `Cancel submission`，不要用同一个 1.0.2 再提交一次。
+
+### 可能被挑的两处
+
+- **Category 选了 Accessibility**，而功能是暗色模式。暗色确实和视觉舒适沾边，但 Accessibility 分类下的主流是高对比、屏幕阅读器类工具，审核有可能说类别不符。真被问就把 Category 改成 Productivity 再提，改这一个字段会重新走审核。
+- **Languages 只填了 English (United States)**，而界面是中文。认证备注里已经写明是有意为之并解释，若审核追问，补一份 zh-CN 的列表即可，不影响包本身。
 
 ## 发新版本
 

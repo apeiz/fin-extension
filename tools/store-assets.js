@@ -9,10 +9,14 @@
  *   05-options.png         1280x800  设置页：站点列表
  *   06-options-all.png     1280x800  设置页：全部入夜 + 白名单
  *   promo-small.png         440x280  小宣传图（不传会导致商店搜索不出结果）
+ *                                    纯色构图，不用底图，见 htmlPromoSmall
  *   promo-large.png        1400x560  大宣传图
  *
  * 图标另由 tools/make_icons.py 生成：
  *   python tools/make_icons.py --size 300 --out store/logo-300.png
+ *
+ * 只重生成其中几张时，在命令后面写名字：
+ *   node tools/store-assets.js promo-small
  *
  * 底图用预置的三组 1280x800 截图，比现场抓取稳定，也不受网络影响。
  * 扩展自身页面在自动化环境里无法直接导航，这里用 file:// 打开真实 HTML 并注入
@@ -250,31 +254,60 @@ function htmlOptions(uri, title, bullets) {
   `);
 }
 
-/* ---------- 宣传图 ---------- */
-const htmlPromoSmall = () => page(`
-    <!-- 同一张页面，左边原样右边入夜：两半各自渲染整幅 440 宽，再按缝切开，
-         内容才在接缝处对得上，而不是各裁一块重复出现 -->
-    <div class="abs" style="left:0;top:0;width:219px;height:280px;overflow:hidden">
-      <img src="${fileUri(shot('sspai', 'before'))}"
-           style="position:absolute;left:0;top:0;width:440px;height:280px;
-                  object-fit:cover;object-position:0 0">
+/* ---------- 小宣传图 ----------
+ * 440x280 在商店列表里只有两百来像素宽，塞网页截图内容是看不清的，
+ * 于是只用三个元素说清一件事：左边原样、右边入夜、中间一道金线。
+ * 左右都是纯色，不依赖任何截图，缩放后也不糊。
+ *
+ * 那圈细线必须左右各配一次色：品牌金 #ffc45c 压在暖白上实测对比只有 1.49，
+ * 等于看不见；深一档的 #b8791c 才够。所以画两个同样的框，各自裁掉一半。
+ */
+const htmlPromoSmall = () => {
+  const W = 440;
+  const H = 280;
+  const LINE = 3;                        // 金线宽度，缩到一半仍有 1.4px
+  const MID = W / 2;
+  const HALF = (W - LINE) / 2;
+  const BOX = 128;                       // 细线方框外沿
+  const ICON = 100;                      // 图标显示尺寸
+  const GAP = (BOX - ICON) / 2;          // 框与图标之间的留白
+  const RING = 2;                        // 细线宽度
+  const RADIUS = Math.round(ICON * 0.22);
+  const LEFT = MID - BOX / 2;
+  const TOP = (H - BOX) / 2;
+
+  const ring = (color, left) => `
+    <div style="position:absolute;left:${left}px;top:${TOP}px;
+         width:${BOX}px;height:${BOX}px;
+         border:${RING}px solid ${color};
+         border-radius:${RADIUS + GAP}px"></div>`;
+
+  return page(`
+    <div class="abs" style="left:0;top:0;width:${HALF}px;height:${H}px;background:#f4f1e8"></div>
+    <div class="abs" style="left:${MID + LINE / 2}px;top:0;width:${HALF}px;height:${H}px;background:#10131a"></div>
+
+    <div class="abs" style="left:${MID - LINE / 2}px;top:0;width:${LINE}px;height:${H}px;
+         background:${C.gold}"></div>
+
+    <!-- 左半圈用深金、右半圈用品牌金，各裁一半；框的圆角 = 图标圆角 + 留白，
+         两者同心，看上去才是一圈等距的线 -->
+    <div class="abs" style="left:0;top:0;width:${MID}px;height:${H}px;overflow:hidden">
+      ${ring('#b8791c', LEFT)}
     </div>
-    <div class="abs" style="left:221px;top:0;width:219px;height:280px;overflow:hidden">
-      <img src="${fileUri(shot('sspai', 'after'))}"
-           style="position:absolute;left:-221px;top:0;width:440px;height:280px;
-                  object-fit:cover;object-position:0 0">
+    <div class="abs" style="left:${MID}px;top:0;width:${MID}px;height:${H}px;overflow:hidden">
+      ${ring(C.gold, LEFT - MID)}
     </div>
 
-    <div class="abs" style="left:218px;top:0;width:4px;height:280px;
-         background:linear-gradient(to bottom, ${C.gold}, rgba(255,196,92,.55))"></div>
-
-    <div class="abs" style="left:162px;top:90px;width:116px;height:116px;border-radius:28px;
-         background:#0b0e14;border:1px solid rgba(255,255,255,.1);
-         box-shadow:0 14px 38px rgba(0,0,0,.62), 0 0 0 6px rgba(11,14,20,.55)">
+    <!-- 图标最后画，金线像是从它背后穿过去 -->
+    <div class="abs" style="left:${MID}px;top:${(H - ICON) / 2}px;
+         width:${ICON}px;height:${ICON}px;margin-left:${-ICON / 2}px;
+         border-radius:${RADIUS}px;
+         box-shadow:0 18px 42px rgba(16,19,26,.30), 0 2px 8px rgba(16,19,26,.18)">
       <img src="${fileUri(path.join(ROOT, 'icons', 'icon128.png'))}"
-           style="width:88px;height:88px;margin:13px;border-radius:21px;display:block">
+           style="width:${ICON}px;height:${ICON}px;display:block">
     </div>
-  `, 'body { width:440px; height:280px; }');
+  `, `body { width:${W}px; height:${H}px; background:#10131a; }`);
+};
 
 const htmlPromoLarge = () => page(`
     <div class="abs" style="inset:0;background:
@@ -298,7 +331,8 @@ const htmlPromoLarge = () => page(`
       </div>
     </div>
 
-    <!-- 与小的宣传图同一套语言：同一屏页面，左半原样右半入夜 -->
+    <!-- 大图有 1400x560 的余量，放得下一整屏网页，所以这里上真实截图；
+         小图没这个余量，改用纯色构图，两张图分工不同 -->
     <div class="abs" style="right:62px;top:61px;width:700px;height:438px;border-radius:14px;overflow:hidden;
          box-shadow:0 30px 74px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.07)">
       <div style="position:absolute;left:0;top:0;width:349px;height:438px;overflow:hidden">
@@ -315,10 +349,18 @@ const htmlPromoLarge = () => page(`
   `, 'body { width:1400px; height:560px; }');
 
 /* ---------- 主流程 ---------- */
+// 只重生成某几张时，把名字（带不带 .png 都行）写在命令行后面
+//   例：node tools/store-assets.js promo-small
+let ONLY = [];
+const want = (name) => !ONLY.length || ONLY.includes(name);
+
 async function snap(browser, html, name, w, h) {
+  if (!want(name.replace(/\.png$/, ''))) return;
   const p = await browser.newPage();
   await p.setViewport({ width: w, height: h, deviceScaleFactor: 1 });
-  await p.setContent(html, { waitUntil: 'load' });
+  // html 可以是函数：只在真要出这张图时才拼装，
+  // 免得跳过某张时它的依赖（比如弹窗 buffer）还是 null 就被用了
+  await p.setContent(typeof html === 'function' ? html() : html, { waitUntil: 'load' });
   await new Promise((r) => setTimeout(r, 260));
   const file = path.join(OUT, name);
   await p.screenshot({ path: file });
@@ -328,6 +370,8 @@ async function snap(browser, html, name, w, h) {
 }
 
 async function main() {
+  ONLY = process.argv.slice(2).map((s) => s.replace(/\.png$/, ''));
+
   // 对比图与宣传图依赖预置的 1280x800 抓图；
   // 目录不存在时只生成界面类素材，不中断。
   const hasShots = ['sspai', 'netease', 'devpress'].every(
@@ -348,15 +392,15 @@ async function main() {
 
   try {
     // 弹窗单独渲染到临时 buffer，让「当前网站」与背景站点对得上
-    const popupBuf = await renderUI(browser, {
+    const popupBuf = want('04-popup') ? await renderUI(browser, {
       page: 'popup.html',
       host: 'www.163.com',
       width: 320,
       height: 216,
       dsf: 2,
       allSites: false
-    });
-    const optionsBuf = await renderUI(browser, {
+    }) : null;
+    const optionsBuf = want('05-options') ? await renderUI(browser, {
       page: 'options.html',
       host: 'sspai.com',
       width: 900,
@@ -364,8 +408,8 @@ async function main() {
       dsf: 1,
       fullPage: true,
       allSites: false
-    });
-    const optionsAllBuf = await renderUI(browser, {
+    }) : null;
+    const optionsAllBuf = want('06-options-all') ? await renderUI(browser, {
       page: 'options.html',
       host: 'sspai.com',
       width: 900,
@@ -373,7 +417,10 @@ async function main() {
       dsf: 1,
       fullPage: true,
       allSites: true
-    });
+    }) : null;
+
+    // 小宣传图是纯色构图，不依赖任何截图，所以放在 hasShots 之外
+    await snap(browser, htmlPromoSmall(), 'promo-small.png', 440, 280);
 
     if (hasShots) {
       await snap(browser, htmlSite(), '01-site.png', 1280, 800);
@@ -383,23 +430,22 @@ async function main() {
       await snap(browser, htmlCompare('netease',
         '图片和视频不动，只有文字和背景翻过来', '彩色照片保持原样，所以不会出现反色的怪画面',
         'www.163.com'), '03-compare-163.png', 1280, 800);
-      await snap(browser, htmlPopup(popupBuf), '04-popup.png', 1280, 800);
+      await snap(browser, () => htmlPopup(popupBuf), '04-popup.png', 1280, 800);
     }
 
-    await snap(browser, htmlOptions(optionsBuf, '站点列表自己管', [
+    await snap(browser, () => htmlOptions(optionsBuf, '站点列表自己管', [
       '填域名就加，支持 *.example.com 覆盖整个域及其子域',
       '单条可以临时关掉，不必删除，改动立即生效',
       '免费 5 个站点，多数人用不到这个上限'
     ]), '05-options.png', 1280, 800);
 
-    await snap(browser, htmlOptions(optionsAllBuf, '也可以全部入夜', [
+    await snap(browser, () => htmlOptions(optionsAllBuf, '也可以全部入夜', [
       '打开「所有网站入夜」，其余站点一并变暗',
       '此时出现白名单，挑出来保持原样',
       'B 站这类需要精确原色的站点，丢进白名单'
     ]), '06-options-all.png', 1280, 800);
 
     if (hasShots) {
-      await snap(browser, htmlPromoSmall(), 'promo-small.png', 440, 280);
       await snap(browser, htmlPromoLarge(), 'promo-large.png', 1400, 560);
     }
   } finally {
