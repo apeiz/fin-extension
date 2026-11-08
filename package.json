@@ -1,6 +1,6 @@
 {
   "name": "fin-extension",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "入夜 Fall in Night - 轻量的网站深色适配扩展，不解析样式表、不阻塞首屏",
   "license": "MIT",
   "scripts": {

@@ -38,15 +38,89 @@ npm run pack        # dist/fin-extension-<版本>.zip
 
 ### 名称与短描述
 
-两者都来自 `manifest.json`，在 Partner Center 里是只读的，要改只能改清单重新上传。
+两者来源不同，改法也不同：
+
+| 字段 | 来源 | 怎么改 |
+| --- | --- | --- |
+| Extension name（商店显示名） | Partner Center 的列表字段，按语言各一份 | **可以直接改**，不必重传包 |
+| Short description | `manifest.json` 的 `description` | 必须改清单并重新上传，Partner Center 里是只读的 |
+
+当前值：
 
 ```
-name:        入夜 Fall in Night
-short_name:  入夜
-description: 入夜 Fall in Night：把指定网站切换为暗色，一键让所有网站入夜。图片视频保持原色，也可作为网站深色适配的预览工具。
+name:        Fall in Night
+description: Turn chosen sites dark without slowing them down. Photos keep their color.
+             30 KB, no tracking, no network requests.
 ```
+
+`short_name` 已移除：Chrome 建议不超过 12 字符，`Fall in Night` 是 13 个，留着会被截断。
+
+**为什么商店名和包内名一致**：列表语言是 en-US（Partner Center 从包里识别出来的唯一语言），
+中文名在英文列表里读不出、也搜不到，所以包内直接改成英文。将来做 zh-CN 列表时，
+用 `_locales` 让包内名称随浏览器语言变化，而不是再改一次名字。
 
 ### 长描述（250 到 10000 字符）
+
+英文版，与 en-US 列表对应。中文版留在本节末尾，等做 zh-CN 列表时再粘。
+
+> Fall in Night turns the sites you choose into a dark theme, without slowing them down.
+>
+> Most dark-mode extensions work by reading your page: walking the stylesheets, deciding whether each color is a background or a text color, then generating a replacement stylesheet. That work runs on the main thread and has to finish before the first paint, which is why some sites feel heavier after installing one.
+>
+> Fall in Night skips all of it. It injects a single CSS filter rule and lets the browser compositor do the rest: nothing is parsed, no colors are computed, no stylesheet is rewritten.
+>
+> **What it does**
+>
+> - Dark on the sites you list. Add a domain and the next load is dark. `*.example.com` covers the domain and every subdomain in one rule.
+> - One switch for the rest. Turn on "all sites" and the rest of the web goes dark too. A whitelist appears at the same time, for the sites that need their exact colors.
+> - Photos and video stay in color. Images, video and canvas are inverted a second time, so they return to their original colors instead of appearing as negatives.
+> - Blocks that were already dark stay dark. Inverting a page turns a navy navigation bar into pale cream; those blocks are flipped back, and the images inside them are left alone.
+> - Large title images are not greyed out. Many sites render a headline as a transparent image with dark text. Those are excluded from the second inversion, which would otherwise leave dark grey lettering on a black page.
+> - Frosted glass does not turn into a bright patch. Backdrop blur is switched off and replaced with a flat translucent color.
+> - Full-screen iframes go dark as well. The content script is injected into every frame, so an embedded page does not leave a white rectangle behind.
+> - Per-site correction CSS, for the odd site that needs one more nudge.
+>
+> **Why it does not slow pages down**
+>
+> There are two ways to darken a page: parse its stylesheets and recompute every color, or parse nothing and put one filter over it. Fall in Night takes the second path. It does not read `CSSStyleSheet`, does not compute colors, does not build a replacement stylesheet. It inserts one `filter: invert(.92) hue-rotate(180deg)` rule at the top of the document and hands the rest to the compositor. The whole package is 30 KB, because that parsing and color-mapping code is not in it.
+>
+> The trade-off is stated plainly: colors come out slightly desaturated. Red `#d92b2b` becomes `(184,67,67)` - same hue, lower saturation. Greyscale text and borders are exact.
+>
+> **How to use it**
+>
+> 1. Click the toolbar icon and switch it on.
+> 2. If the current site is not in the list, use the site switch: it is added as an exact rule, takes priority over wildcards, and applies immediately without a refresh.
+> 3. The options page (bottom right of the popup) manages the site list, the whitelist and the display settings.
+>
+> **Free version and unlocking**
+>
+> The free version saves up to 5 sites and 3 whitelist entries, with the full feature set: no trial period, no time limit. Reaching the limit never deletes an existing entry - it only stops you adding more.
+>
+> Unlocking is a one-time payment of about 6 CNY (roughly 1 USD), collected by the developer through Afdian, a creator-support platform; Microsoft is not involved in the payment. You receive a 12-character licence code and enter it on the options page. The code removes the site limit and changes nothing else.
+>
+> **Known limitations**
+>
+> These are boundaries of the approach, not bugs waiting to be fixed:
+>
+> 1. Video sites and sites that need exact colors are a poor fit. Use the site's own dark theme, or add it to the whitelist.
+> 2. CSS background images become negatives, so large banners and textured cards can look wrong. Per-site correction CSS helps.
+> 3. White images stay bright on a dark page - that is the cost of keeping photos in their original colors.
+> 4. Native select dropdowns stay light. The browser draws them and an extension cannot reach them.
+> 5. A cross-origin iframe is judged by its own domain, so it needs its own rule.
+>
+> **Privacy**
+>
+> No data is collected, no browsing history is uploaded, no network request is made, there is no remote code and no analytics SDK. Settings live in `chrome.storage.local` on your device. Styles are injected only into pages that match your list; every other page gets nothing.
+>
+> **Why it asks for access to all sites**
+>
+> The extension has to inject styles into whatever site you choose, and that list changes at any time, so it cannot be granted per-domain up front. The permission is broad by necessity, but the extension only acts on sites that match your list.
+>
+> **Open source**
+>
+> The source is at https://github.com/apeiz/fin-extension under the MIT licence. Bug reports and feature requests go to the issue tracker.
+
+#### 中文版（zh-CN 列表用，暂不提交）
 
 > 入夜把网页收进夜色里。
 >
