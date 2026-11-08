@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>入夜 Fall in Night - 轻量的网站深色适配扩展</title>
+<meta name="description" content="入夜 Fall in Night 是一个把指定网站切换为暗色的浏览器扩展。30 KB，不解析样式表、不阻塞首屏、不发起任何网络请求。">
+<style>
+  :root {
+    --bg: #0d1017;
+    --bg-raise: #141922;
+    --line: #232b38;
+    --text: #e8eaef;
+    --dim: #9aa3b2;
+    --faint: #6b7484;
+    --gold: #ffc45c;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+  header { padding: 76px 0 56px; }
+  .mark {
+    display: inline-flex; align-items: center; gap: 14px;
+    margin-bottom: 30px;
+  }
+  .logo {
+    width: 44px; height: 44px; border-radius: 11px;
+    background: linear-gradient(160deg, #2a3242, #141922);
+    border: 1px solid var(--line);
+    position: relative; flex: 0 0 auto;
+  }
+  .logo::after {
+    content: ""; position: absolute; inset: 0; margin: auto;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 7px -5px 0 0 var(--bg);
+  }
+  .mark b { font-size: 17px; font-weight: 600; letter-spacing: .01em; }
+  .mark span { color: var(--faint); font-size: 13px; }
+
+  h1 {
+    font-size: 40px; line-height: 1.3; margin: 0 0 18px;
+    letter-spacing: -.02em; font-weight: 700;
+  }
+  h1 em { font-style: normal; color: var(--gold); }
+  .lede { font-size: 17px; color: var(--dim); margin: 0; max-width: 34em; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+    border-radius: 12px; overflow: hidden; margin: 46px 0 0;
+  }
+  .facts div { background: var(--bg-raise); padding: 20px 18px; }
+  .facts b {
+    display: block; font-size: 22px; font-weight: 600;
+    color: var(--gold); letter-spacing: -.01em;
+  }
+  .facts span { font-size: 13px; color: var(--faint); }
+
+  section { padding: 52px 0; border-top: 1px solid var(--line); }
+  h2 {
+    font-size: 15px; font-weight: 600; margin: 0 0 22px;
+    color: var(--dim); letter-spacing: .06em; text-transform: uppercase;
+  }
+  h3 { font-size: 17px; margin: 30px 0 8px; font-weight: 600; }
+  h3:first-of-type { margin-top: 0; }
+  p { margin: 0 0 14px; color: var(--dim); }
+  p strong { color: var(--text); font-weight: 600; }
+
+  details {
+    border-bottom: 1px solid var(--line);
+    padding: 16px 0;
+  }
+  details:last-of-type { border-bottom: 0; }
+  summary {
+    cursor: pointer; list-style: none; font-weight: 600; font-size: 16px;
+    display: flex; justify-content: space-between; gap: 16px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--faint); font-weight: 400; }
+  details[open] summary::after { content: "-"; }
+  details p { margin: 12px 0 0; font-size: 15px; }
+
+  .shot {
+    display: block; width: 100%; max-width: 420px; margin: 0 auto;
+    border-radius: 12px; border: 1px solid var(--line);
+  }
+
+  .buy {
+    background: var(--bg-raise); border: 1px solid var(--line);
+    border-radius: 12px; padding: 26px 24px;
+  }
+  .buy p { margin-bottom: 0; }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .btn {
+    display: inline-block; margin-top: 18px;
+    padding: 11px 22px; border-radius: 9px;
+    background: var(--gold); color: #14171d;
+    font-weight: 600; font-size: 15px;
+  }
+  .btn:hover { text-decoration: none; opacity: .9; }
+
+  footer {
+    padding: 40px 0 70px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--faint);
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+  }
+  code {
+    font-family: ui-monospace, Consolas, monospace; font-size: .92em;
+    background: #1b212c; padding: 1px 6px; border-radius: 5px;
+    color: #cfd6e4;
+  }
+
+  @media (max-width: 620px) {
+    header { padding: 52px 0 40px; }
+    h1 { font-size: 30px; }
+    .facts { grid-template-columns: 1fr; }
+    section { padding: 40px 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="mark">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <b>入夜 Fall in Night</b><br>
+        <span>Chrome / Edge 扩展，Manifest V3</span>
+      </div>
+    </div>
+
+    <h1>把网页收进夜色，<br><em>但不拖慢它。</em></h1>
+    <p class="lede">
+      指定几个网站，打开就是暗的。图片和视频保持原色，原本深色的区块不会被翻成亮块。
+      它不解析你的样式表，也不提交任何数据。
+    </p>
+
+    <div class="facts">
+      <div><b>30 KB</b><span>安装包体积</span></div>
+      <div><b>0</b><span>网络请求</span></div>
+      <div><b>1 条</b><span>注入的 CSS 规则</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>为什么它不会拖慢网页</h2>
+    <p>
+      市面上的暗色方案大多要先<strong>读懂页面</strong>：遍历样式表、判断每个颜色是背景还是文字、
+      生成一整套替换规则。这些工作跑在主线程上，而且必须在首屏绘制之前完成，页面自然变慢。
+    </p>
+    <p>
+      入夜走的是另一条路：不读样式表、不算颜色，只往页面里插一条 CSS 滤镜，交给浏览器的合成器处理。
+      代价是彩色会轻微褪色，换来的是几乎为零的启动成本。
+    </p>
+  </section>
+
+  <section>
+    <h2>它做了什么</h2>
+    <details open>
+      <summary>整页变暗，图片保持原色</summary>
+      <p>主规则把页面反色并旋转色相。照片、视频、画布再反转一次，回到原本的颜色，所以不会看到负片。</p>
+    </details>
+    <details>
+      <summary>原本深色的区块保持深色</summary>
+      <p>反色会把深蓝的导航栏翻成浅米色。扩展会找出这些区块再反一次，让它们回到深色，区块里的图片则不做二次处理。</p>
+    </details>
+    <details>
+      <summary>标题位图不会被染灰</summary>
+      <p>不少站点把大标题做成「透明底加深色文字」的图片。这类图片不参与还原，否则会变成深灰压在黑底上。</p>
+    </details>
+    <details>
+      <summary>毛玻璃不会退化成亮斑</summary>
+      <p>带 <code>backdrop-filter</code> 的导航栏反色后会糊成一块亮斑，所以统一关掉模糊，改用不透明度。</p>
+    </details>
+    <details>
+      <summary>整屏 iframe 也会一起变暗</summary>
+      <p>内容脚本注入到所有框架，站内嵌的页面不会在暗色里留一块白。</p>
+    </details>
+  </section>
+
+  <section>
+    <h2>安装</h2>
+    <p>
+      扩展正在上架 Microsoft Edge 加载项商店，审核通过后这里会换成商店链接。
+      在此之前可以直接下载打包好的 zip，解压后在
+      <code>edge://extensions</code> 打开开发者模式，选择「加载解压缩的扩展」。
+    </p>
+    <p><a href="./fin-extension-1.0.1.zip" download>下载 fin-extension-1.0.1.zip（30 KB）</a></p>
+  </section>
+
+  <section>
+    <h2>免费额度与解锁</h2>
+    <div class="buy">
+      <p>
+        免费版可以保存 <strong>5 个站点</strong>和 <strong>3 条白名单</strong>，功能完整，没有试用期，也不限使用时长。
+        只用两三个站的人永远碰不到上限。
+      </p>
+      <p style="margin-top:14px">
+        需要更多时，可以赞助 <strong>¥6 一次性</strong>换一个授权码，激活后不再限制数量。
+        收款由爱发电处理，不是 Microsoft。授权码在扩展设置页的「站点数量」一栏输入。
+      </p>
+      <a class="btn" href="https://afdian.com/item/980ad088db4e11f1a3da52540025c377">在爱发电获取授权码</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>已知限制</h2>
+    <p>
+      反色是像素级的后处理，它无法区分「一个好看的颜色」和「一个不好看的颜色」。
+      所以彩色会比原来淡一点，饱和度高的纯色（比如亮黄）会掉一截。
+      深色主题的站点再被反一次会变浅，这类站点建议加进白名单。
+    </p>
+  </section>
+
+  <section id="support">
+    <h2>支持与联系</h2>
+    <p>
+      问题、建议、报错都可以在仓库提 issue：
+      <a href="https://github.com/apeiz/fin-extension/issues">github.com/apeiz/fin-extension/issues</a>
+    </p>
+    <p>
+      授权码收不到、提示不合法，或者在别处遇到问题，也在同一个地方留言，附上系统版本与浏览器版本会更快定位。
+    </p>
+  </section>
+
+  <footer>
+    <span>入夜 Fall in Night</span>
+    <a href="./privacy.html">隐私政策</a>
+    <a href="https://github.com/apeiz/fin-extension">源代码</a>
+    <a href="https://github.com/apeiz/fin-extension/issues">反馈</a>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -11,6 +11,9 @@ dist/
 downloads/
 *.zip
 
+# 站点上的下载包（GitHub Pages 直接提供）
+!docs/*.zip
+
 # 商店素材（本地生成，tools/store-assets.js）
 store/
 

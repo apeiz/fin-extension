@@ -114,15 +114,35 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 | 字段 | 值 |
 | --- | --- |
 | Category | Productivity |
-| Privacy policy URL | `https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md` |
-| Support URL | `https://github.com/apeiz/fin-extension/issues` |
-| Website | 留空 |
+| Privacy policy URL | `https://apeiz.github.io/fin-extension/privacy.html` |
+| Support URL | `https://apeiz.github.io/fin-extension/#support` |
+| Website | `https://apeiz.github.io/fin-extension/` |
 | Search terms | 暗色模式 深色模式 夜间模式 网页变暗 dark mode night mode 护眼 |
 | YouTube video | 留空 |
 | Mature content | 否 |
 | Contains in-app purchases | **是**（政策 1.8.2 要求披露付费功能与价格区间，描述里已写明） |
 | Visibility | Public |
 | Markets | 全部 |
+
+### 为什么不用 GitHub 仓库地址
+
+Partner Center 的 URL 校验对 `github.com/<用户>/<仓库>` 这种路径经常判「unreachable」。
+实测该地址本身返回 200，问题出在校验器这一侧，不是仓库挂了。
+
+所以站点放在 GitHub Pages（`docs/` 目录）上，三个字段全部指向它：
+
+| 用途 | 地址 |
+| --- | --- |
+| Website | `https://apeiz.github.io/fin-extension/` |
+| Privacy policy URL | `https://apeiz.github.io/fin-extension/privacy.html` |
+| Support URL | `https://apeiz.github.io/fin-extension/#support` |
+
+开通方式：仓库 Settings，左侧 Pages，Source 选 `Deploy from a branch`，
+分支 `main`、目录 `/docs`，保存。首次生效约 1 分钟。
+
+站点文件在 `docs/`：`index.html`（介绍页，含下载与赞助入口）、`privacy.html`（隐私政策）。
+`docs/fin-extension-<版本>.zip` 是下载按钮指向的包，**每次发版要和 `dist/` 里的新包一起替换**，
+否则站点上挂的还是旧版本。
 
 ## Privacy 页面逐项答案
 
@@ -275,7 +295,8 @@ https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md
 
 1. 改 `manifest.json` 的 `version`，`package.json` 同步（不一致 `npm test` 会报错）。
 2. `npm test`，再 `npm run pack` 出 `dist/fin-extension-<版本>.zip`。
-3. Partner Center 里打开该扩展，走「更新」，上传新包后提交。
+3. 把新包复制到 `docs/`，同步改 `docs/index.html` 里的下载链接与版本号，否则站点上挂的是旧包。
+4. Partner Center 里打开该扩展，走「更新」，上传新包后提交。
 4. 审核期间线上仍是旧版本，通过后自动替换。
 
 两件事容易踩：

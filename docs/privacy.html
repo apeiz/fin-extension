@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策 - 入夜 Fall in Night</title>
+<meta name="description" content="入夜 Fall in Night 浏览器扩展的隐私政策：不收集、不上传、不分享任何数据，扩展不发起任何网络请求。">
+<style>
+  :root {
+    --bg: #0d1017;
+    --bg-raise: #141922;
+    --line: #232b38;
+    --text: #e8eaef;
+    --dim: #9aa3b2;
+    --faint: #6b7484;
+    --gold: #ffc45c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", sans-serif;
+    font-size: 16px; line-height: 1.8;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 90px; }
+  h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -.01em; font-weight: 700; }
+  .date { color: var(--faint); font-size: 13px; margin: 0 0 42px; }
+  h2 {
+    font-size: 15px; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--dim); margin: 44px 0 14px; font-weight: 600;
+  }
+  p { margin: 0 0 14px; color: var(--dim); }
+  p strong { color: var(--text); font-weight: 600; }
+  ul { color: var(--dim); margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 6px 0; }
+  .lead {
+    font-size: 19px; color: var(--text); line-height: 1.7;
+    padding: 20px 22px; border-left: 3px solid var(--gold);
+    background: var(--bg-raise); border-radius: 0 10px 10px 0;
+    margin-bottom: 8px;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 18px; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--faint); font-weight: 500; font-size: 13px; }
+  td { color: var(--dim); }
+  td:first-child { color: var(--text); white-space: nowrap; }
+  code {
+    font-family: ui-monospace, Consolas, monospace; font-size: .9em;
+    background: #1b212c; padding: 1px 6px; border-radius: 5px; color: #cfd6e4;
+  }
+  a { color: var(--gold); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  footer {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--faint); display: flex; gap: 20px; flex-wrap: wrap;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>隐私政策</h1>
+  <p class="date">入夜 Fall in Night 浏览器扩展　·　最后更新 2026 年 11 月 8 日</p>
+
+  <p class="lead">本扩展不收集、不上传、不分享任何数据。它没有服务器。</p>
+
+  <h2>具体说明</h2>
+  <p><strong>不收集。</strong>不读取浏览历史，不记录你访问过的网址，不采集设备信息、位置或使用行为。</p>
+  <p><strong>不上传。</strong>扩展不发起任何网络请求。没有统计服务，没有崩溃上报，没有广告，没有远程配置。全部代码都在扩展包内，可以在浏览器开发者工具的 Network 面板里验证为零请求。</p>
+  <p><strong>不写入网页。</strong>扩展只向页面注入样式表来改变显示颜色，不修改网页内容，不读取页面里的文字、表单或登录信息。</p>
+
+  <h2>本地存储</h2>
+  <p>以下设置保存在浏览器本地（<code>chrome.storage.local</code>），不离开你的设备：</p>
+  <ul>
+    <li>站点列表与通配规则</li>
+    <li>白名单</li>
+    <li>总开关、所有网站入夜、图片还原等开关状态</li>
+    <li>自定义 CSS</li>
+  </ul>
+  <p>卸载扩展时这些数据一并删除。</p>
+
+  <h2>权限用途</h2>
+  <table>
+    <thead>
+      <tr><th>权限</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>storage</code></td>
+        <td>保存上述设置。</td>
+      </tr>
+      <tr>
+        <td><code>activeTab</code></td>
+        <td>在你打开扩展面板时读取当前标签页网址，用于判断该站点是否在列表中。</td>
+      </tr>
+      <tr>
+        <td><code>content_scripts</code> 匹配 <code>&lt;all_urls&gt;</code></td>
+        <td>在网页上注入样式表。这是「把网站变暗」唯一可行的实现方式，因此需要覆盖所有站点。扩展不读取页面内容，也不上传任何信息。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>第三方</h2>
+  <p>扩展不包含任何第三方 SDK、分析工具或远程代码。</p>
+  <p>设置页里的赞助链接会跳转到爱发电（afdian.com）。跳转之后产生的账号与支付信息由爱发电处理，扩展既不读取也不保存这些信息，只接收你自己填进来的授权码。</p>
+
+  <h2>变更</h2>
+  <p>若本政策有实质变更，会在扩展更新说明中标注，并更新本文档顶部的日期。</p>
+
+  <h2>联系</h2>
+  <p>通过仓库的 Issues 反馈：<a href="https://github.com/apeiz/fin-extension/issues">github.com/apeiz/fin-extension/issues</a></p>
+
+  <footer>
+    <a href="./index.html">返回首页</a>
+    <a href="https://github.com/apeiz/fin-extension">源代码</a>
+  </footer>
+
+</div>
+</body>
+</html>
