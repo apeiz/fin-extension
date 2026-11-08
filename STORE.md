@@ -86,7 +86,7 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 >
 > 免费版可以保存 5 个站点和 3 条白名单，功能完整，没有试用期，也不限使用时长。到上限时不会删除任何已有条目，只是不能再新增。
 >
-> 需要更多站点时，可以赞助 6 元换取一个授权码，激活后不再限制数量。授权码不绑定设备，换电脑继续用同一个码即可。赞助通过爱发电完成，收款方是开发者本人，不是 Microsoft。授权码在扩展设置页的「站点数量」一栏里输入。
+> 需要更多站点时，可以赞助 6 元换取一个授权码，激活后不再限制数量。赞助通过爱发电完成，收款方是开发者本人，不是 Microsoft。授权码在扩展设置页的「站点数量」一栏里输入。
 >
 > **已知限制**
 >
@@ -126,37 +126,133 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 
 ## Privacy 页面逐项答案
 
-审核最常卡在这一页，逐项填清楚。
+Partner Center 的 Privacy 页有六块，都是必填。下面每一段都可以直接粘贴。
 
-**Single purpose**
+字段建议用英文写：表单是英文的，读它的是微软的政策审核员，写英文减少误读。
+每段后面附中文版，若你希望整页中文，替换成中文即可（两者内容一致）。
 
-> 把用户指定的网站页面切换为暗色显示，并允许用户随时调整生效的站点范围。
+### 1. Single purpose description
 
-**Permission justification**
+```
+Fall in Night has one purpose: turn the pages of websites the user chooses into a dark
+colour scheme, so a bright page does not stay bright at night.
 
-| 权限 | 填写内容 |
-| --- | --- |
-| `storage` | 保存用户的站点列表、白名单与显示方式设置。这些数据只存在浏览器本地，不上传。 |
-| `activeTab` | 读取当前标签页的网址，用于在弹窗里显示当前站点是否已启用，并在用户打开站点开关时把这个域名加入列表。只在用户点击扩展图标时读取。 |
-| `<all_urls>`（host permission） | 扩展需要在用户指定的任意站点上注入暗色样式。站点列表由用户随时增删，无法预先枚举域名，因此必须声明全网匹配；内容脚本在运行时会先比对站点列表，未命中的页面不注入任何样式。 |
+It injects one CSS filter rule (invert plus hue rotation) into pages on a list the user
+maintains, plus four supporting rules so that photos keep their original colours,
+already-dark blocks stay dark, and blur effects do not turn into bright patches. The user
+decides which sites are affected, either by listing them or by enabling all sites and
+excluding some.
 
-**Remote code**
+The extension does not change page content, does not read page text, does not collect or
+transmit anything, and makes no network requests. It does not parse stylesheets or compute
+colour values, so it does not delay page load.
+```
 
-> 否。所有代码都在扩展包内，不加载任何远程脚本，不使用 `eval`。
+中文版：
 
-**Data usage**
+```
+把一个网页变成暗色，这就是它的全部用途。
 
-全部勾「不收集」：不收集个人身份信息、健康信息、财务信息、认证信息、个人通讯、位置、浏览记录、用户活动、网站内容。
+做法是在用户维护的站点列表上注入一条 CSS 滤镜规则（反色加色相旋转），另加四条辅助规则：
+图片视频保持原色、原本深色的区块保持深色、毛玻璃效果不退化成亮斑。哪些站点生效由用户决定，
+逐个列出或者开启「所有网站入夜」再用白名单排除。
 
-三项承诺（Data usage 页面的三个复选框）全部勾选：
+不修改网页内容，不读取页面文本，不收集也不上传任何数据，不发起任何网络请求。
+不解析样式表、不计算颜色值，因此不会拖慢页面加载。
+```
 
-- 不出售或转让用户数据给第三方
-- 不将用户数据用于与核心功能无关的用途
-- 不将用户数据用于判定信用度或放贷
+### 2. Permission justification
 
-**Certification notes（给审核员的备注，有则填）**
+`storage`：
 
-> 扩展不发起任何网络请求。已在 Chrome 155 与 Edge 上实测：加载后打开列表内站点，整页变暗；打开列表外站点，DOM 不变。仓库内有 8 项 lint、34 项共享逻辑、23 项界面交互与 23 项真实浏览器 e2e 测试。
+```
+Remembers the user's own settings so they survive a restart: the list of sites to darken,
+the whitelist, four display toggles, optional per-site correction CSS, and a licence code
+if the user has entered one. Written with chrome.storage.local only. The data stays inside
+the browser profile on the user's device and is never sent anywhere.
+```
+
+```
+保存用户自己的设置，重启浏览器后仍然有效：站点列表、白名单、四个显示开关、可选的逐站修正 CSS，
+以及用户自己填进来的授权码。只写入 chrome.storage.local，数据留在本机浏览器配置里，不发往任何地方。
+```
+
+`activeTab`：
+
+```
+Used only after the user clicks the toolbar icon. The popup reads the URL of the active tab
+to show which site the on/off switch applies to, and whether that site is already covered
+by a rule. The URL is used for that display only - not stored, not logged, not sent.
+No page content is read.
+```
+
+```
+只在用户点击工具栏图标之后使用。弹窗读取当前标签页的网址，用于显示这个开关作用于哪个站点、
+该站点是否已在规则里。网址只用于这次显示，不存储、不记录、不外发，不读取任何页面内容。
+```
+
+**若表单里另有一栏问 `content_scripts` 的 `<all_urls>`（有的版本在 Properties 或 Site access 页）：**
+
+```
+The extension injects its dark rule into whatever site the user chooses, and that list
+changes at any time, so domains cannot be enumerated in advance. Every page is matched by
+the manifest, but the first thing the content script does is compare the host against the
+user's list; pages that are not covered get no style, no DOM change and no reads.
+```
+
+```
+用户想让哪个网站变暗就加哪个，列表随时变化，无法事先枚举域名，所以清单里声明了全网匹配。
+但内容脚本运行后的第一件事就是把当前域名和用户列表比对，未命中的页面不注入样式、不改 DOM、不做读取。
+```
+
+### 3. Are you using remote code?
+
+选 **No, I am not using remote code.**
+
+Justification（不强制，但填上有利）：
+
+```
+All code ships inside the package. There is no eval, no new Function, no remote script or
+WASM, no update_url and no externally_connectable. The extension makes no network requests
+at all. The only outbound link is the optional sponsorship page in the settings UI, which
+opens only when the user clicks it.
+```
+
+### 4. Data usage
+
+九个复选框**全部不勾**（本扩展不收集任何一类数据）：
+
+- Personally identifiable information
+- Health information
+- Financial and payment information
+- Authentication information
+- Personal communications
+- Location
+- Web history
+- User activity
+- Website content
+
+一项都不勾是有依据的，不是漏填：扩展不读取页面文本，不记录访问过的网址，不采集设备信息与使用行为，
+配置只写在本机 `chrome.storage.local`。
+
+### 5. Privacy policy URL
+
+```
+https://github.com/apeiz/fin-extension/blob/main/PRIVACY.md
+```
+
+这个地址已实测可匿名访问（HTTP 200）。注意：仓库里当前是 1.0.0 的版本，
+本地 1.0.1 的隐私政策（补了爱发电跳转说明）还没推上去，推完内容才一致。
+
+### 6. I certify the following disclosures are true
+
+三个复选框**全部勾选**：
+
+- I do not sell or transfer user data to third parties, outside of the approved use cases
+- I do not use or transfer user data for purposes that are unrelated to my item's single purpose
+- I do not use or transfer user data to determine creditworthiness or for lending purposes
+
+三条都成立：扩展没有任何数据外发通道，连网络请求都没有。
 
 ## 提审前检查
 
@@ -165,7 +261,9 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 - [ ] 版本号高于上一次提交
 - [ ] zip 根目录直接是 `manifest.json`，不是外层文件夹
 - [ ] 6 张截图与 2 张宣传图都已上传
-- [ ] Privacy 页面的四个区块（Single purpose、Permissions、Remote code、Data usage）都已填
+- [ ] Privacy 页面的六块都已填：Single purpose、storage、activeTab、Remote code、
+      Data usage（全部不勾）、Privacy policy URL、三项认证复选框
+- [ ] 上传的 zip 版本与 `CHANGELOG` 顶部那条一致
 
 ## 审核周期
 
@@ -203,7 +301,7 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 对只用两三个站的人完全够用。
 
 这个商品是解锁码：激活后不再限制站点数量与白名单条数，其余功能完全一样。
-一次性买断，不订阅、不续费；一码不限设备，换电脑把同一个码再输一遍即可。
+一次性买断，不订阅、不续费。
 
 支持 Edge 与 Chrome（Manifest V3）。
 ```
@@ -225,5 +323,5 @@ description: 入夜 Fall in Night：把指定网站切换为暗色，一键让�
 
 **关于分享（别写「分享会失效」，那是假的）**
 
-激活码本地校验、不绑设备，所以转给别人也能用，这一点技术上防不住，也不打算防。
+激活码在本地校验，没有在线验证，所以复制传播在技术上拦不住。
 可以请用户别公开贴出去——说清「防止传播只能靠自觉」比编一个不存在的失效机制更可信。

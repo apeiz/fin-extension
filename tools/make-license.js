@@ -157,7 +157,7 @@ function generate(count, raw, save) {
 
   console.error('');
   console.error('[下一步] 全选上面的码，粘进爱发电赞助方案的「添加自动随机回复」，一行一个');
-  console.error('[提醒] 码不绑定设备，换电脑可继续用；剩余数量见底前记得回来补一批');
+  console.error('[提醒] 剩余数量见底前记得回来补一批，断档期间买家收不到码');
 }
 
 function main() {

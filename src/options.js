@@ -125,7 +125,7 @@
   function activate() {
     var raw = SD.licNormalize(els.licInput.value);
     if (!raw) {
-      licHint('授权码是 12 位，形如 YUE7-K3M9-PQ4T');
+      licHint('授权码是 12 位，形如 XXXX-XXXX-XXXX，粘贴进来即可');
       els.licInput.focus();
       return;
     }
