@@ -252,23 +252,27 @@ function htmlOptions(uri, title, bullets) {
 
 /* ---------- 宣传图 ---------- */
 const htmlPromoSmall = () => page(`
-    <div class="abs" style="inset:0;background:
-      radial-gradient(300px 240px at 92% 88%, rgba(255,196,92,.14), transparent 72%)"></div>
-    <div class="abs" style="left:28px;top:30px;width:210px">
-      <img src="${fileUri(path.join(ROOT, 'icons', 'icon128.png'))}"
-           style="width:52px;height:52px;border-radius:13px">
-      <div style="margin-top:15px;font-size:29px;font-weight:700;letter-spacing:.01em;line-height:1.2">入夜</div>
-      <div style="margin-top:4px;font-size:13px;color:${C.gold};letter-spacing:.04em">Fall in Night</div>
-      <div style="margin-top:13px;font-size:12.5px;line-height:1.6;color:${C.muted}">
-        先看到暗下来<br>是什么样
-      </div>
-      <div style="margin-top:10px;font-size:11px;color:${C.gold};letter-spacing:.02em">
-        不到 30 KB · 不拖慢网页
-      </div>
+    <!-- 同一张页面，左边原样右边入夜：两半各自渲染整幅 440 宽，再按缝切开，
+         内容才在接缝处对得上，而不是各裁一块重复出现 -->
+    <div class="abs" style="left:0;top:0;width:219px;height:280px;overflow:hidden">
+      <img src="${fileUri(shot('sspai', 'before'))}"
+           style="position:absolute;left:0;top:0;width:440px;height:280px;
+                  object-fit:cover;object-position:0 0">
     </div>
-    <div class="abs" style="right:22px;top:76px;width:168px;border-radius:10px;overflow:hidden;
-         box-shadow:0 14px 34px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.08)">
-      <img src="${fileUri(shot('sspai', 'after'))}" style="width:168px;display:block">
+    <div class="abs" style="left:221px;top:0;width:219px;height:280px;overflow:hidden">
+      <img src="${fileUri(shot('sspai', 'after'))}"
+           style="position:absolute;left:-221px;top:0;width:440px;height:280px;
+                  object-fit:cover;object-position:0 0">
+    </div>
+
+    <div class="abs" style="left:218px;top:0;width:4px;height:280px;
+         background:linear-gradient(to bottom, ${C.gold}, rgba(255,196,92,.55))"></div>
+
+    <div class="abs" style="left:162px;top:90px;width:116px;height:116px;border-radius:28px;
+         background:#0b0e14;border:1px solid rgba(255,255,255,.1);
+         box-shadow:0 14px 38px rgba(0,0,0,.62), 0 0 0 6px rgba(11,14,20,.55)">
+      <img src="${fileUri(path.join(ROOT, 'icons', 'icon128.png'))}"
+           style="width:88px;height:88px;margin:13px;border-radius:21px;display:block">
     </div>
   `, 'body { width:440px; height:280px; }');
 
@@ -294,9 +298,19 @@ const htmlPromoLarge = () => page(`
       </div>
     </div>
 
-    <div class="abs" style="right:62px;top:62px;width:700px;border-radius:14px;overflow:hidden;
+    <!-- 与小的宣传图同一套语言：同一屏页面，左半原样右半入夜 -->
+    <div class="abs" style="right:62px;top:61px;width:700px;height:438px;border-radius:14px;overflow:hidden;
          box-shadow:0 30px 74px rgba(0,0,0,.62), 0 0 0 1px rgba(255,255,255,.07)">
-      <img src="${fileUri(shot('sspai', 'after'))}" style="width:700px;display:block">
+      <div style="position:absolute;left:0;top:0;width:349px;height:438px;overflow:hidden">
+        <img src="${fileUri(shot('sspai', 'before'))}"
+             style="position:absolute;left:0;top:0;width:700px;height:438px;object-fit:cover;object-position:0 0">
+      </div>
+      <div style="position:absolute;left:351px;top:0;width:349px;height:438px;overflow:hidden">
+        <img src="${fileUri(shot('sspai', 'after'))}"
+             style="position:absolute;left:-351px;top:0;width:700px;height:438px;object-fit:cover;object-position:0 0">
+      </div>
+      <div style="position:absolute;left:348px;top:0;width:4px;height:438px;
+           background:linear-gradient(to bottom, ${C.gold}, rgba(255,196,92,.5))"></div>
     </div>
   `, 'body { width:1400px; height:560px; }');
 
