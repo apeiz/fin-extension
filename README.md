@@ -2,6 +2,9 @@
 
 让指定的网站常驻暗色。装一次，列表里的站点以后打开就是暗的，不用每次手动切。
 
+项目进展与赞助入口都在爱发电：[afdian.com/a/fin-extention](https://afdian.com/a/fin-extention)。
+每次版本更新做了什么、踩过哪些坑，记在 [DEVLOG.md](DEVLOG.md)。
+
 ## 为什么它不拖慢网页
 
 让网页变暗有两条路：解析页面的样式表、把每个颜色重算一遍；或者不解析，直接套一层滤镜。
@@ -49,7 +52,15 @@ html { filter: invert(.92) hue-rotate(180deg); }
 免费版保存 5 个站点、3 条白名单。到上限不删已有条目，只是不能新增。
 
 需要更多时赞助 ¥6 一次性换一个授权码，激活后不再限制数量。收款方是开发者，不是 Microsoft。
-入口：[afdian.com/item/980ad088](https://afdian.com/item/980ad088db4e11f1a3da52540025c377)。
+
+授权码在发码流程上走爱发电的订单系统，`tools/afdian.js` 用来查订单、核对哪些付款还没发码。
+
+## 支持这个项目
+
+- 爱发电主页：[afdian.com/a/fin-extention](https://afdian.com/a/fin-extention)，项目进展、版本说明都发在这里
+- 授权码：[入夜 Fall in Night 激活码](https://afdian.com/item/980ad088db4e11f1a3da52540025c377)，¥6 一次性
+- 开发记录：[DEVLOG.md](DEVLOG.md)，按时间记下每次取舍与踩过的坑
+- 问题反馈：[Issues](https://github.com/apeiz/fin-extension/issues)
 
 ## 已知限制
 

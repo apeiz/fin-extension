@@ -543,3 +543,41 @@ CRX ID 同时是扩展在浏览器里的运行时 ID，`edge-extension://mlchkmk
 
 激活码在本地校验，没有在线验证，所以复制传播在技术上拦不住。
 可以请用户别公开贴出去——说清「防止传播只能靠自觉」比编一个不存在的失效机制更可信。
+
+## 爱发电创作者认证
+
+认证要证明两件事：本人在别处有持续的创作，以及本人公开宣传自己的爱发电主页。两条都要在**别的公开页面**上留下痕迹，只在爱发电站内互相指向不算。
+
+- 爱发电主页：`https://afdian.com/a/fin-extention`
+- 授权码商品：`https://afdian.com/item/980ad088db4e11f1a3da52540025c377`
+- 开发者后台（拿 user_id 与 API Token）：`https://afdian.com/dashboard/dev`
+
+### 已布置的证据点
+
+| 位置 | 放的内容 |
+| --- | --- |
+| `README.md` 开头 | 一句「项目进展与赞助入口都在爱发电」加主页链接 |
+| `README.md`「支持这个项目」 | 主页、商品、开发记录、Issues 四条并列 |
+| `DEVLOG.md` | 按日期的开发记录，从 10-22 的反色方案写到接入 API，是「持续创作」的实物 |
+| `docs/index.html` 免费额度区 | 按钮下方小字指向爱发电主页与开发记录 |
+| `docs/index.html` 页脚 | 「爱发电」入口 |
+
+还差两处只能手工补，都在网页上操作：
+
+- 仓库右上角 About 的 Website 字段，填爱发电主页地址
+- GitHub 个人主页（`github.com/apeiz`）如果开了 profile README，也写一句并放链接
+
+### API 能做什么，不能做什么
+
+能做：查历史订单、查赞助者。签名规则是
+`sign = md5(token + 'params' + params + 'ts' + ts + 'user_id' + user_id)`，
+官方给了示例数据，复算结果 `a4acc28b81598b7e5d84ebdc3e91710c` 与文档一致，可直接照抄实现。
+
+不能做：**主动给买家发私信**。平台没有这个接口，自动发码仍然只能靠「自动随机回复」，
+而那项要认证通过。所以 API 的定位是「人工发码时的对账工具」，不是替代发码通道。
+
+`tools/afdian.js` 覆盖四个命令：`ping` 验签名、`orders` 拉订单（可 `--since` 与 `--csv`）、
+`pending` 列出付款但台账里还没记发码的订单、`mark` 发完标记。台账写 `licenses/sent.tsv`，
+与 `ledger.tsv` 一样在 `.gitignore` 里。
+
+凭证只从环境变量读，`AFDIAN_USER_ID` 与 `AFDIAN_TOKEN`，不写文件、不进仓库。
